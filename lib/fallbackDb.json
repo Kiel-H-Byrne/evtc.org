@@ -1,0 +1,297 @@
+{
+  "courses": [
+    {
+      "id": "course-1",
+      "name": "EVTC Bathtub, Tile And Vanity Refinishing Course",
+      "description": "The history of bathtub refinishing and its beginning is debatable. Some sources may suggest the service of refinishing bathtubs started in the 1950’s or 1960’s and some sources might argue that it was much earlier. However, the truth about bathtub refinishing is that it’s a specialty. This unique trade requires a lot of training, especially when it comes to the use and handling of chemicals. It’s often said that bathtub refinishing is equivalent to painting a car but without the long hours of sanding primer and pulling out dents. The goal of this special trade is to restore the bathtub, tile, sink and vanity back to its original factory finish as close as possible. Here at EVTC we will teach you the fundamentals and techniques used in bathtub refinishing, training students on industry standard equipment and high-quality commercial grade epoxy primer and polyurethane paint.",
+      "schedule": "One Week Training Course Of 39 Hours and 15 Minutes Monday - Friday",
+      "price": 3800,
+      "priceNote": "USD (Debit Card Only)",
+      "extraMaterial": {
+        "description": "Care maintenance, Warranty And Preparation Sheets on PDF File",
+        "price": 150,
+        "priceNote": "USD"
+      },
+      "paymentInstructions": "No Cash, Credit Cards, Cashier’s Checks, Checks, Money Orders, Bitcoin and Payment Plans Are Not Accepted.",
+      "available": true,
+      "availableDate": "2026-09-01",
+      "lessons": [
+        {
+          "id": "lesson-1-1",
+          "name": "EVTC Bathtub Refinishing Manual",
+          "resources": [
+            {
+              "id": "res-1-1-1",
+              "type": "pdf",
+              "name": "Bathtub Refinishing Manual",
+              "url": "https://www.evtc.com/resources/bathtub-refinishing-manual.pdf",
+              "locked": false
+            }
+          ]
+        },
+        {
+          "id": "lesson-1-2",
+          "name": "Refinishing Safety Training",
+          "resources": [
+            {
+              "id": "res-1-2-1",
+              "type": "slides",
+              "name": "Safety Training Slides",
+              "url": "https://www.evtc.com/resources/safety-training-slides.pdf",
+              "locked": false
+            }
+          ]
+        },
+        {
+          "id": "lesson-1-3",
+          "name": "Bathtub Minor and Major Repair Practical Training",
+          "resources": [
+            {
+              "id": "res-1-3-1",
+              "type": "slides",
+              "name": "Repair Practical Slides",
+              "url": "https://www.evtc.com/resources/repair-practical-slides.pdf",
+              "locked": false
+            }
+          ]
+        },
+        {
+          "id": "lesson-1-4",
+          "name": "Bathtub, Tile And Vanity Refinishing Practical Training",
+          "resources": [
+            {
+              "id": "res-1-4-1",
+              "type": "slides",
+              "name": "Refinishing Practical Slides",
+              "url": "https://www.evtc.com/resources/refinishing-practical-slides.pdf",
+              "locked": false
+            }
+          ]
+        },
+        {
+          "id": "lesson-1-5",
+          "name": "Set Up Account With Paint Provider",
+          "resources": [
+            {
+              "id": "res-1-5-1",
+              "type": "link",
+              "name": "Create Account",
+              "url": "https://www.paintprovider.com/onboarding",
+              "locked": false
+            }
+          ]
+        },
+        {
+          "id": "lesson-1-6",
+          "name": "Bathtub Refinishing Business Recommendations",
+          "resources": [
+            {
+              "id": "res-1-6-1",
+              "type": "slides",
+              "name": "Business Recommendations Slides",
+              "url": "https://www.evtc.com/resources/business-recommendations-slides.pdf",
+              "locked": false
+            }
+          ]
+        },
+        {
+          "id": "lesson-1-7",
+          "name": "Certificate Of Completion",
+          "resources": [
+            {
+              "id": "res-1-7-1",
+              "type": "pdf",
+              "name": "Certificate Of Completion",
+              "url": "https://www.evtc.com/resources/certificate-of-completion.pdf",
+              "locked": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "course-2",
+      "name": "EVTC Countertop and Cabinet Refinishing Course",
+      "description": "Covers countertop repair, countertop refinishing, cabinet repair, and cabinet refinishing.",
+      "schedule": "TBD",
+      "price": 2200,
+      "priceNote": "USD (Debit Card Only)",
+      "available": false,
+      "availableDate": "2027-01-01",
+      "lessons": [
+        {
+          "id": "lesson-2-1",
+          "name": "Countertop Repair",
+          "resources": [
+            {
+              "id": "res-2-1-1",
+              "type": "pdf",
+              "name": "Countertop Repair Guide",
+              "url": "https://www.evtc.com/resources/countertop-repair-guide.pdf",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "id": "lesson-2-2",
+          "name": "Countertop Refinishing",
+          "resources": [
+            {
+              "id": "res-2-2-1",
+              "type": "video",
+              "name": "Countertop Refinishing Video",
+              "url": "https://www.youtube.com/embed/EVTC-countertop",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "id": "lesson-2-3",
+          "name": "Cabinet Repair",
+          "resources": [
+            {
+              "id": "res-2-3-1",
+              "type": "pdf",
+              "name": "Cabinet Repair Guide",
+              "url": "https://www.evtc.com/resources/cabinet-repair-guide.pdf",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "id": "lesson-2-4",
+          "name": "Cabinet Refinishing",
+          "resources": [
+            {
+              "id": "res-2-4-1",
+              "type": "slides",
+              "name": "Cabinet Refinishing Slides",
+              "url": "https://www.evtc.com/resources/cabinet-refinishing-slides.pdf",
+              "locked": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "course-3",
+      "name": "EVTC Maintenance Course",
+      "description": "Lessons in interior wall and trim repair and painting, carpet restoration and cleaning, and water damage category 1 extraction and treatment.",
+      "schedule": "TBD",
+      "price": 1800,
+      "priceNote": "USD (Debit Card Only)",
+      "available": false,
+      "availableDate": "2027-03-01",
+      "lessons": [
+        {
+          "id": "lesson-3-1",
+          "name": "Interior Wall and Trim Repair and Painting",
+          "resources": [
+            {
+              "id": "res-3-1-1",
+              "type": "pdf",
+              "name": "Wall and Trim Guide",
+              "url": "https://www.evtc.com/resources/wall-trim-guide.pdf",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "id": "lesson-3-2",
+          "name": "Carpet Restoration and Cleaning",
+          "resources": [
+            {
+              "id": "res-3-2-1",
+              "type": "video",
+              "name": "Carpet Cleaning Video",
+              "url": "https://www.youtube.com/embed/EVTC-carpet",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "id": "lesson-3-3",
+          "name": "Water Damage Category 1 Extraction and Treatment",
+          "resources": [
+            {
+              "id": "res-3-3-1",
+              "type": "slides",
+              "name": "Water Damage Slides",
+              "url": "https://www.evtc.com/resources/water-damage-slides.pdf",
+              "locked": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "course-4",
+      "name": "EVTC Drywall Install Training Course",
+      "description": "Includes drywall demo, drywall install, primer and paint lessons.",
+      "schedule": "TBD",
+      "price": 1600,
+      "priceNote": "USD (Debit Card Only)",
+      "available": false,
+      "availableDate": "2027-05-01",
+      "lessons": [
+        {
+          "id": "lesson-4-1",
+          "name": "Drywall Demo",
+          "resources": [
+            {
+              "id": "res-4-1-1",
+              "type": "video",
+              "name": "Drywall Demo Video",
+              "url": "https://www.youtube.com/embed/EVTC-drywall-demo",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "id": "lesson-4-2",
+          "name": "Drywall Install",
+          "resources": [
+            {
+              "id": "res-4-2-1",
+              "type": "pdf",
+              "name": "Drywall Install Guide",
+              "url": "https://www.evtc.com/resources/drywall-install-guide.pdf",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "id": "lesson-4-3",
+          "name": "Primer and Paint",
+          "resources": [
+            {
+              "id": "res-4-3-1",
+              "type": "slides",
+              "name": "Primer and Paint Slides",
+              "url": "https://www.evtc.com/resources/primer-paint-slides.pdf",
+              "locked": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "course-5",
+      "name": "EVTC Business Course (Coming Soon)",
+      "description": "Business skills for home improvement professionals. Coming soon.",
+      "schedule": "TBD",
+      "price": 0,
+      "priceNote": "TBD",
+      "available": false,
+      "availableDate": "2028-01-01",
+      "lessons": []
+    }
+  ],
+  "about": {
+    "heading": "Welcome to Elite Vocational Training Center",
+    "body": "EVTC is a private trade school located in the Central Pennsylvania area and is dedicated to training students in home improvement. It’s our mission to provide the best quality of education and practical training to our students from EVTC instructors, who are certified refinishing and restoration technicians, with ten plus years of experience. We believe that it’s our responsibility to share the knowledge to the next generation of Home Improvement Professionals."
+  },
+  "contact": {
+    "email": "elitehigherlearning@gmail.com"
+  }
+}
