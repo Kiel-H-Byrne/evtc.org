@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AppContainer, Header, Main, Section } from "@/components/ui/Styled";
-import { HeroSVG } from "@/components/ui/HeroSVG";
-import { NavigationBar } from "@/components/layout/Navigation";
+import { Section } from "@/components/ui/Styled";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { RegistrationForm } from "@/components/sections/RegistrationForm";
 import { CourseList, CourseDetail } from "@/components/sections/CourseViews";
 import { LessonModal } from "@/components/sections/LessonModal";
@@ -12,7 +11,6 @@ import { useCms } from "@/components/cms/useCms";
 import type { Course, Lesson, AboutContent, ContactContent } from "@/components/cms/types";
 
 // -------------------- FALLBACK DATABASE --------------------
-// This fallback is used while the Sanity CMS schema is unpopulated.
 import dbFallback from "@/lib/fallbackDb.json";
 
 export default function HomePage() {
@@ -33,7 +31,6 @@ export default function HomePage() {
     let active = true;
 
     async function fetchData() {
-      // Attempt to fetch from CMS
       const [fetchedCourses, fetchedAbout, fetchedContact] = await Promise.all([
         getCourses(),
         getAboutContent(),
@@ -42,7 +39,6 @@ export default function HomePage() {
 
       if (!active) return;
 
-      // Fallback logic if Sanity hasn't been populated with EVTC data yet
       if (!fetchedCourses || fetchedCourses.length === 0) {
         setCourses(dbFallback.courses as unknown as Course[]);
         setAbout(dbFallback.about as AboutContent);
@@ -82,29 +78,20 @@ export default function HomePage() {
 
   const selectedCourse = courses.find((c) => c.id === selectedCourseId);
 
+  const navigationProps = {
+    currentTab: tab,
+    onTabChange: handleTabChange,
+    courses: courses,
+    selectedCourseId: selectedCourseId,
+    onCourseSelect: handleCourseSelect
+  };
+
   return (
-    <AppContainer>
-      <Header>
-        <h1 style={{ marginBottom: 0, fontFamily: "var(--font-heading)", fontSize: "2.2rem" }}>
-          Elite Vocational Training Center
-        </h1>
-        <div style={{ margin: "1em 0" }}>
-          <HeroSVG />
-        </div>
-      </Header>
-
-      <NavigationBar 
-        currentTab={tab} 
-        onTabChange={handleTabChange} 
-        courses={courses} 
-        selectedCourseId={selectedCourseId}
-        onCourseSelect={handleCourseSelect}
-      />
-
-      <Main>
+    <>
+      <PageWrapper navigationProps={navigationProps}>
         {loading ? (
           <Section>
-            <h2>Loading application data...</h2>
+            <h2 style={{ color: "var(--theme-primary)" }}>Loading application data...</h2>
           </Section>
         ) : (
           <>
@@ -138,7 +125,7 @@ export default function HomePage() {
             )}
           </>
         )}
-      </Main>
+      </PageWrapper>
 
       {/* Lesson Details Modal */}
       {activeLesson && (
@@ -147,6 +134,6 @@ export default function HomePage() {
           onClose={() => setActiveLesson(null)} 
         />
       )}
-    </AppContainer>
+    </>
   );
 }

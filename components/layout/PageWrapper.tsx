@@ -1,8 +1,10 @@
 "use client";
 
-import { Footer } from "@/components/layout/Footer";
-import { Navigation } from "@/components/layout/Navigation";
+import { Header } from "@/components/ui/Styled";
+import Image from "next/image";
 import styled from "styled-components";
+import { Footer } from "./Footer";
+import { NavigationBar, type NavigationProps } from "./Navigation";
 
 const AppContainer = styled.div.attrs({
   "data-component": "AppContainer",
@@ -12,15 +14,22 @@ const AppContainer = styled.div.attrs({
   align-items: center;
   width: 100%;
   min-height: 100vh;
+  background: ${(p) => p.theme.colors.background};
 `;
 
 const MainContent = styled.main.attrs({
   "data-component": "MainContent",
 } as any)`
   width: 100%;
-  max-width: 1200px;
-  padding: ${(p) => p.theme.spacing.lg}px;
+  max-width: 900px;
+  margin: 2em auto;
+  padding: 0 1em;
   flex: 1;
+  animation: fadein 0.3s ease-in;
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   @media (max-width: 768px) {
     padding: ${(p) => p.theme.spacing.md}px;
@@ -29,17 +38,29 @@ const MainContent = styled.main.attrs({
 
 type PageWrapperProps = {
   children: React.ReactNode;
-  showBackButton?: boolean;
+  navigationProps: NavigationProps;
 };
 
 export function PageWrapper({
   children,
-  showBackButton = true,
+  navigationProps,
 }: PageWrapperProps) {
   return (
     <AppContainer>
-      <Navigation />
+      <Header>
+        <h1 style={{ marginBottom: 0, fontFamily: "var(--font-heading)", fontSize: "2.2rem" }}>
+          Elite Vocational Training Center
+        </h1>
+        <div style={{ margin: "1em 0" }}>
+          {/* <HeroSVG /> */}
+          <Image src="/EVTC Website.png" alt="EVTC Website" width={320} height={120} />
+        </div>
+      </Header>
+
+      <NavigationBar {...navigationProps} />
+
       <MainContent>{children}</MainContent>
+
       <Footer />
     </AppContainer>
   );
