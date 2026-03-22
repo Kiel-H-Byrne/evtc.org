@@ -11,7 +11,6 @@ const AppContainer = styled.div.attrs({
 } as any)`
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
   min-height: 100vh;
   background: ${(p) => p.theme.colors.background};
@@ -48,12 +47,12 @@ export function PageWrapper({
   return (
     <AppContainer>
       <Header>
-        <h1 style={{ marginBottom: 0, fontFamily: "var(--font-heading)", fontSize: "2.2rem" }}>
+        <h1 style={{ marginBottom: 0, fontFamily: "var(--font-heading)", fontSize: "2.2rem", color: "var(--theme-text-secondary)" }}>
           Elite Vocational Training Center
         </h1>
         <div style={{ margin: "1em 0" }}>
           {/* <HeroSVG /> */}
-          <Image src="/img/EVTC Website.png" alt="EVTC Website" width={320} height={120} />
+          <Image src="/img/EVTC Website.png" alt="EVTC Website" width={320} height={120} style={{ margin: "auto" }} />
         </div>
       </Header>
 
