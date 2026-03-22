@@ -53,7 +53,7 @@ export function PageWrapper({
         </h1>
         <div style={{ margin: "1em 0" }}>
           {/* <HeroSVG /> */}
-          <Image src="/EVTC Website.png" alt="EVTC Website" width={320} height={120} />
+          <Image src="/img/EVTC Website.png" alt="EVTC Website" width={320} height={120} />
         </div>
       </Header>
 
