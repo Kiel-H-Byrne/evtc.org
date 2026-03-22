@@ -51,7 +51,7 @@ export function RegistrationForm({ courses, preselectedCourseId }: { courses: Co
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ 
     courseId: preselectedCourseId || "", 
-    agreeToPay: false,
+    agreeToPay: false as boolean | string,
     firstName: "", 
     lastName: "", 
     email: "" 

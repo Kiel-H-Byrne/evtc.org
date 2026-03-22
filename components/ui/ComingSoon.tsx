@@ -66,7 +66,7 @@ const OverlayTitle = styled.h2`
   padding: 0;
   font-size: ${(p) => p.theme.typography.h2Size}px;
   font-weight: ${(p) => p.theme.typography.headingFontWeight};
-  color: ${(p) => p.theme.colors.info};
+  color: ${(p) => p.theme.colors.accent};
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 `;
 

@@ -80,7 +80,7 @@ export const ResourceTile = styled.a.attrs({
 
   &:hover,
   &:focus-visible {
-    background: ${(p) => p.theme.colors.accentLight};
+    background: ${(p) => p.theme.colors.accentHover};
     border-color: ${(p) => p.theme.colors.accent};
     transform: translateX(4px);
     text-decoration: none;

@@ -1,5 +1,5 @@
-import { CashAppIcon, ZelleIcon } from "@/components/icons";
 import { Event, HeroCarouselItem, PastEvent } from "@/types";
+import { SiCashapp, SiZelle } from "react-icons/si";
 
 export const UPCOMING_EVENTS: Event[] = [
   {
@@ -36,12 +36,12 @@ export const UPCOMING_EVENTS: Event[] = [
           service: "CashApp",
           username: "$CorbinUnited",
           url: "https://cash.app/$CorbinUnited",
-          icon: <CashAppIcon />,
+          icon: <SiCashapp />
         },
         {
           service: "Zelle",
           username: "corbinunited2025@gmail.com",
-          icon: <ZelleIcon />,
+          icon: <SiZelle />,
         },
       ],
       note: "More at the door — secure your spot early!",

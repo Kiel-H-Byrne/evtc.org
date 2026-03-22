@@ -56,7 +56,7 @@ export const ButtonOutline = styled.a.attrs({
 
   &:hover,
   &:focus-visible {
-    background: ${(p) => p.theme.colors.accentLight};
+    background: ${(p) => p.theme.colors.accentHover};
     color: ${(p) => p.theme.colors.accent};
     text-decoration: none;
   }

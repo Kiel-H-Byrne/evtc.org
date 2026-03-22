@@ -24,7 +24,7 @@ const inputBase = css`
   &:focus {
     border-color: ${(p) => p.theme.colors.accent};
     outline: none;
-    box-shadow: 0 0 0 3px ${(p) => p.theme.colors.accentLight};
+    box-shadow: 0 0 0 3px ${(p) => p.theme.colors.accentHover};
   }
 `;
 
