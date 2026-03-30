@@ -1,5 +1,5 @@
 "use client";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export const AppContainer = styled.div`
   min-height: 100vh;
@@ -21,8 +21,14 @@ export const Main = styled.main`
   padding: 0 1em;
   animation: fadein 0.3s ease-in;
   @keyframes fadein {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 `;
 
@@ -62,7 +68,8 @@ export const Button = styled.button`
   cursor: pointer;
   transition: ${(p) => p.theme.transitions.default};
   font-size: 1rem;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background: ${(p) => p.theme.colors.accentHover};
     box-shadow: ${(p) => p.theme.shadows.sm};
     outline: none;
@@ -77,7 +84,8 @@ export const ButtonOutline = styled(Button)`
   background: transparent;
   border: 2px solid ${(p) => p.theme.colors.primary};
   color: ${(p) => p.theme.colors.primary};
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background: ${(p) => p.theme.colors.primary};
     color: ${(p) => p.theme.colors.surface};
   }
@@ -105,6 +113,24 @@ export const Select = styled.select`
   padding: 0.75em 1em;
   font-size: 1rem;
   margin-bottom: 1em;
+  transition: ${(p) => p.theme.transitions.default};
+  &:focus {
+    outline: none;
+    border-color: ${(p) => p.theme.colors.accent};
+    box-shadow: 0 0 0 2px ${(p) => p.theme.colors.accentHover}33;
+  }
+`;
+
+export const Textarea = styled.textarea`
+  font-family: ${(p) => p.theme.typography.fontFamily};
+  border: 1px solid ${(p) => p.theme.colors.border};
+  border-radius: ${(p) => p.theme.radii.small}px;
+  padding: 0.75em 1em;
+  font-size: 1rem;
+  margin-bottom: 1em;
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
   transition: ${(p) => p.theme.transitions.default};
   &:focus {
     outline: none;

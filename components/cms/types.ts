@@ -46,3 +46,19 @@ export type ContactContent = {
   phone?: string;
   address?: string;
 };
+
+export type Student = {
+  name: string;
+  dob: string;
+  address: string;
+  phone: string;
+  email: string;
+  courseId: string;
+  requiresTransportation: boolean;
+  travelingFrom: string;
+  physicalLimitations: boolean;
+  foodAllergies: boolean;
+  specificRequirements: string;
+  workedInHomeImprovement: boolean;
+  howHeard: string;
+};

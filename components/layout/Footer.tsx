@@ -1,9 +1,9 @@
 "use client";
 
-import styled from "styled-components";
-import React from "react";
-import { useCms } from "@/components/cms/useCms";
 import type { ContactContent } from "@/components/cms/types";
+import { useCms } from "@/components/cms/useCms";
+import React from "react";
+import styled from "styled-components";
 
 const FooterContainer = styled.footer`
   background: ${(p) => p.theme.colors.primary};
@@ -83,7 +83,8 @@ export function Footer() {
         <FooterColumn>
           <FooterLogo>EVTC</FooterLogo>
           <p style={{ opacity: 0.8, lineHeight: 1.6 }}>
-            Elite Vocational Training Center is dedicated to training students in home improvement and refinishing to professional, industry-leading standards.
+            Elite Vocational Training Center is dedicated to training students
+            in home improvement.
           </p>
         </FooterColumn>
 
@@ -99,12 +100,22 @@ export function Footer() {
           <FooterHeading>Contact Us</FooterHeading>
           <p style={{ opacity: 0.8, margin: 0 }}>
             {contact?.email ? (
-              <a href={`mailto:${contact.email}`} style={{ color: "var(--theme-accent)" }}>{contact.email}</a>
+              <a
+                href={`mailto:${contact.email}`}
+                style={{ color: "var(--theme-accent)" }}
+              >
+                {contact.email}
+              </a>
             ) : (
-              <a href="mailto:elitehigherlearning@gmail.com" style={{ color: "var(--theme-accent)" }}>elitehigherlearning@gmail.com</a>
+              <a
+                href="mailto:elitehigherlearning@gmail.com"
+                style={{ color: "var(--theme-accent)" }}
+              >
+                elitehigherlearning@gmail.com
+              </a>
             )}
           </p>
-          {(contact?.phone) && (
+          {contact?.phone && (
             <p style={{ opacity: 0.8, margin: 0 }}>{contact.phone}</p>
           )}
           <p style={{ opacity: 0.8, margin: 0 }}>
@@ -114,7 +125,8 @@ export function Footer() {
       </FooterContent>
 
       <CopyrightArea>
-        &copy; {new Date().getFullYear()} Elite Vocational Training Center. All rights reserved.
+        &copy; {new Date().getFullYear()} Elite Vocational Training Center. All
+        rights reserved.
       </CopyrightArea>
     </FooterContainer>
   );
