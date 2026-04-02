@@ -1,4 +1,5 @@
 import { type SchemaTypeDefinition } from "sanity";
+import { siteSettings } from "./siteSettings";
 
 const studentType: SchemaTypeDefinition = {
   name: "student",
@@ -39,5 +40,5 @@ const studentType: SchemaTypeDefinition = {
 };
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [studentType],
+  types: [studentType, siteSettings],
 };
