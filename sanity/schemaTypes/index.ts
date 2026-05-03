@@ -1,4 +1,8 @@
 import { type SchemaTypeDefinition } from "sanity";
+import { courseType } from "./course";
+import { lessonType } from "./lesson";
+import { aboutContentType } from "./aboutContent";
+import { contactContentType } from "./contactContent";
 
 const studentType: SchemaTypeDefinition = {
   name: "student",
@@ -39,5 +43,5 @@ const studentType: SchemaTypeDefinition = {
 };
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [studentType],
+  types: [studentType, courseType, lessonType, aboutContentType, contactContentType],
 };
