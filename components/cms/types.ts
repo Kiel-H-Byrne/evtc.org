@@ -22,6 +22,12 @@ export type CourseExtraMaterial = {
   priceNote?: string;
 };
 
+export type CourseSession = {
+  startDate: string;
+  endDate: string;
+  label?: string;
+};
+
 export type Course = {
   id: string;
   name: string;
@@ -34,7 +40,9 @@ export type Course = {
   available: boolean;
   availableDate?: string;
   lessons: Lesson[];
+  sessions?: CourseSession[];
 };
+
 
 export type AboutContent = {
   heading: string;
@@ -54,6 +62,7 @@ export type Student = {
   phone: string;
   email: string;
   courseId: string;
+  sessionDates?: string;
   requiresTransportation: boolean;
   travelingFrom: string;
   physicalLimitations: boolean;

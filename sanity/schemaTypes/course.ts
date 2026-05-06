@@ -64,5 +64,34 @@ export const courseType = defineType({
       type: "array",
       of: [{ type: "reference", to: [{ type: "lesson" }] }],
     }),
+    defineField({
+      name: "sessions",
+      title: "Course Sessions",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          name: "session",
+          fields: [
+            { name: "startDate", type: "date", title: "Start Date", validation: (Rule) => Rule.required() },
+            { name: "endDate", type: "date", title: "End Date", validation: (Rule) => Rule.required() },
+            { name: "label", type: "string", title: "Label (e.g. Summer Cohort)" },
+          ],
+          preview: {
+            select: {
+              startDate: "startDate",
+              endDate: "endDate",
+              label: "label",
+            },
+            prepare({ startDate, endDate, label }) {
+              return {
+                title: label || `${startDate} to ${endDate}`,
+                subtitle: label ? `${startDate} to ${endDate}` : "",
+              };
+            },
+          },
+        },
+      ],
+    }),
   ],
 });

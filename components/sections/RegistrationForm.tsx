@@ -20,6 +20,7 @@ const stripePromise = loadStripe(
 
 type FormState = {
   courseId: string;
+  sessionDates: string;
   name: string;
   dob: string;
   address: string;
@@ -39,6 +40,7 @@ type FormErrors = Partial<Record<keyof FormState, string>>;
 
 const INITIAL_FORM: FormState = {
   courseId: "",
+  sessionDates: "",
   name: "",
   dob: "",
   address: "",
@@ -142,8 +144,19 @@ export function RegistrationForm({
 
   function validate(): boolean {
     const errs: FormErrors = {};
-    if (step === 0 && !form.courseId) {
-      errs.courseId = "Please select a course to continue.";
+    if (step === 0) {
+      if (!form.courseId) {
+        errs.courseId = "Please select a course to continue.";
+      } else {
+        const selectedCourse = courses.find((c) => c.id === form.courseId);
+        if (
+          selectedCourse?.sessions &&
+          selectedCourse.sessions.length > 0 &&
+          !form.sessionDates
+        ) {
+          errs.sessionDates = "Please select a preferred session to continue.";
+        }
+      }
     } else if (step === 1) {
       if (!form.name.trim()) errs.name = "Full name is required.";
       if (!form.dob) errs.dob = "Date of birth is required.";
@@ -208,6 +221,7 @@ export function RegistrationForm({
           : type === "checkbox"
           ? (e.target as HTMLInputElement).checked
           : value,
+      ...(name === "courseId" ? { sessionDates: "" } : {}),
     }));
   }
 
@@ -272,6 +286,31 @@ export function RegistrationForm({
               </Select>
               {errors.courseId && <ErrorMsg>{errors.courseId}</ErrorMsg>}
             </FormRow>
+
+            {selectedCourse?.sessions && selectedCourse.sessions.length > 0 && (
+              <FormRow>
+                <Label>Select Preferred Session</Label>
+                <Select
+                  name="sessionDates"
+                  value={form.sessionDates}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Choose a session --</option>
+                  {selectedCourse.sessions.map((s, idx) => {
+                    const label = s.label
+                      ? `${s.label} (${s.startDate} to ${s.endDate})`
+                      : `${s.startDate} to ${s.endDate}`;
+                    return (
+                      <option key={idx} value={`${s.startDate} to ${s.endDate}`}>
+                        {label}
+                      </option>
+                    );
+                  })}
+                </Select>
+                {errors.sessionDates && <ErrorMsg>{errors.sessionDates}</ErrorMsg>}
+              </FormRow>
+            )}
+
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <Button type="button" onClick={next}>
                 Continue to Registration
@@ -500,6 +539,11 @@ export function RegistrationForm({
               <p>
                 <strong>Course:</strong> {selectedCourse.name}
               </p>
+              {form.sessionDates && (
+                <p>
+                  <strong>Session:</strong> {form.sessionDates}
+                </p>
+              )}
               <p>
                 <strong>Total Due:</strong> $
                 {selectedCourse.price.toLocaleString()}
@@ -540,7 +584,9 @@ export function RegistrationForm({
             )}
             <p style={{ color: "#6E6E6E", fontSize: "1.1rem" }}>
               Thank you, {form.name}. Your registration for{" "}
-              <strong>{selectedCourse?.name}</strong> has been received.
+              <strong>{selectedCourse?.name}</strong>{" "}
+              {form.sessionDates && `(${form.sessionDates}) `}
+              has been received.
             </p>
             <p style={{ color: "#6E6E6E" }}>
               Confirmation emails have been sent to{" "}
