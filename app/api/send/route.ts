@@ -29,6 +29,7 @@ function adminHtml(data: Student & { courseName: string }) {
       <tr><td><strong>Phone</strong></td><td>${data.phone}</td></tr>
       <tr><td><strong>Email</strong></td><td>${data.email}</td></tr>
       <tr><td><strong>Course</strong></td><td>${data.courseName}</td></tr>
+      ${data.sessionDates ? `<tr><td><strong>Session</strong></td><td>${data.sessionDates}</td></tr>` : ""}
       <tr><td><strong>Requires Transportation</strong></td><td>${yesNo(data.requiresTransportation)}</td></tr>
       <tr><td><strong>Traveling From</strong></td><td>${data.travelingFrom || "—"}</td></tr>
       <tr><td><strong>Physical Limitations</strong></td><td>${yesNo(data.physicalLimitations)}</td></tr>
@@ -40,10 +41,10 @@ function adminHtml(data: Student & { courseName: string }) {
   `;
 }
 
-function studentHtml(data: { name: string; courseName: string }) {
+function studentHtml(data: { name: string; courseName: string; sessionDates?: string }) {
   return `
     <h2>Thank you for registering, ${data.name}!</h2>
-    <p>Your registration for <strong>${data.courseName}</strong> at Elite Vocational Training Center has been received.</p>
+    <p>Your registration for <strong>${data.courseName}</strong> ${data.sessionDates ? `(${data.sessionDates}) ` : ""}at Elite Vocational Training Center has been received.</p>
     <p>Our team will be in touch with next steps. If you have any questions, reply to this email or contact us at ${ADMIN_EMAIL}.</p>
     <p>— Elite VTC Team</p>
   `;
