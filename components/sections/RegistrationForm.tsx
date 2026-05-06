@@ -10,6 +10,13 @@ import {
 } from "@/components/ui/Styled";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import { StripePaymentForm } from "./StripePaymentForm";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 type FormState = {
   courseId: string;
@@ -82,8 +89,8 @@ const Step = styled.div<{ active?: boolean; past?: boolean }>`
     p.active
       ? p.theme.colors.accent
       : p.past
-        ? p.theme.colors.primary
-        : p.theme.colors.textSecondary};
+      ? p.theme.colors.primary
+      : p.theme.colors.textSecondary};
   transition: ${(p) => p.theme.transitions.default};
 `;
 
@@ -123,6 +130,8 @@ export function RegistrationForm({
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
 
   const steps = [
     "Course Selection",
@@ -142,15 +151,43 @@ export function RegistrationForm({
       if (!form.phone.trim()) errs.phone = "Phone number is required.";
       if (!form.email || !/^[^@]+@[^@]+\.[^@]+$/.test(form.email))
         errs.email = "Valid email is required.";
-    } else if (step === 2 && !form.agreeToPay) {
-      errs.agreeToPay = "You must confirm payment to proceed.";
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
-  function next() {
-    if (validate()) setStep((s) => s + 1);
+  async function next() {
+    if (validate()) {
+      if (step === 1) {
+        // Create payment intent when moving to payment step
+        const selectedCourse = courses.find((c) => c.id === form.courseId);
+        if (selectedCourse && selectedCourse.price > 0) {
+          setSubmitting(true);
+          try {
+            const res = await fetch("/api/create-payment-intent", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                amount: selectedCourse.price * 100, // amount in cents
+                currency: "usd",
+              }),
+            });
+            const { clientSecret } = await res.json();
+            setClientSecret(clientSecret);
+          } catch (error) {
+            console.error(error);
+            setErrors({
+              ...errors,
+              agreeToPay: "Failed to create payment intent.",
+            });
+            return;
+          } finally {
+            setSubmitting(false);
+          }
+        }
+      }
+      setStep((s) => s + 1);
+    }
   }
 
   function handleBack() {
@@ -160,7 +197,7 @@ export function RegistrationForm({
   function handleChange(
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    >
   ) {
     const { name, value, type } = e.target;
     setForm((f) => ({
@@ -169,14 +206,12 @@ export function RegistrationForm({
         type === "radio"
           ? value === "true"
           : type === "checkbox"
-            ? (e.target as HTMLInputElement).checked
-            : value,
+          ? (e.target as HTMLInputElement).checked
+          : value,
     }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!validate()) return;
+  async function handleSuccessfulPayment() {
     setSubmitting(true);
     try {
       await fetch("/api/send", {
@@ -187,6 +222,7 @@ export function RegistrationForm({
           courseName: selectedCourse?.name ?? "",
         }),
       });
+      setPaymentSuccessful(true);
     } finally {
       setSubmitting(false);
       setStep(3);
@@ -212,7 +248,7 @@ export function RegistrationForm({
         ))}
       </Stepper>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => e.preventDefault()}>
         {/* Step 0 — Course Selection */}
         {step === 0 && (
           <div>
@@ -447,8 +483,8 @@ export function RegistrationForm({
               <ButtonOutline type="button" onClick={handleBack}>
                 Back
               </ButtonOutline>
-              <Button type="button" onClick={next}>
-                Continue to Payment
+              <Button type="button" onClick={next} disabled={submitting}>
+                {submitting ? "Processing..." : "Continue to Payment"}
               </Button>
             </div>
           </div>
@@ -456,7 +492,7 @@ export function RegistrationForm({
 
         {/* Step 2 — Payment */}
         {step === 2 && selectedCourse && (
-          <div>
+          <Elements stripe={stripePromise}>
             <CheckOutBox>
               <h3 style={{ margin: "0 0 1em 0", fontSize: "1.2rem" }}>
                 Payment Details
@@ -466,62 +502,23 @@ export function RegistrationForm({
               </p>
               <p>
                 <strong>Total Due:</strong> $
-                {selectedCourse.price.toLocaleString()}{" "}
-                {selectedCourse.priceNote}
+                {selectedCourse.price.toLocaleString()}
               </p>
-              {selectedCourse.extraMaterial && (
-                <p>
-                  <strong>Included Materials:</strong>{" "}
-                  {selectedCourse.extraMaterial.description} ($
-                  {selectedCourse.extraMaterial.price} USD)
-                </p>
-              )}
-              <div
-                style={{
-                  marginTop: "1.5em",
-                  padding: "1em",
-                  background: "#fff",
-                  borderLeft: "4px solid #C9A227",
-                }}
-              >
-                <strong>Important:</strong>{" "}
-                {selectedCourse.paymentInstructions ||
-                  "No alternative payment methods accepted."}
-              </div>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5em",
-                  marginTop: "1.5em",
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  name="agreeToPay"
-                  checked={form.agreeToPay}
-                  onChange={handleChange}
+              {clientSecret ? (
+                <StripePaymentForm
+                  clientSecret={clientSecret}
+                  onSuccess={handleSuccessfulPayment}
                 />
-                <span style={{ fontWeight: 600 }}>
-                  I confirm and authorize this payment.
-                </span>
-              </label>
-              {errors.agreeToPay && (
-                <ErrorMsg style={{ marginTop: "0.5em" }}>
-                  {errors.agreeToPay}
-                </ErrorMsg>
+              ) : (
+                <p>Loading payment form...</p>
               )}
             </CheckOutBox>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <ButtonOutline type="button" onClick={handleBack}>
                 Back
               </ButtonOutline>
-              <Button type="submit" disabled={submitting}>
-                {submitting ? "Submitting…" : "Confirm & Complete Registration"}
-              </Button>
             </div>
-          </div>
+          </Elements>
         )}
 
         {/* Step 3 — Confirmation */}
@@ -536,6 +533,11 @@ export function RegistrationForm({
             >
               Welcome to Elite Vocational Training Center!
             </h3>
+            {paymentSuccessful && (
+              <p style={{ color: "green", fontSize: "1.1rem" }}>
+                Your payment was successful!
+              </p>
+            )}
             <p style={{ color: "#6E6E6E", fontSize: "1.1rem" }}>
               Thank you, {form.name}. Your registration for{" "}
               <strong>{selectedCourse?.name}</strong> has been received.
