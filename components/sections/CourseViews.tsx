@@ -69,39 +69,46 @@ export function CourseList({
       <h2 style={{ marginBottom: "1em", color: "var(--theme-foreground)" }}>
         Training Courses
       </h2>
-      {courses.map((course) => (
-        <CourseCard key={course.id}>
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "1.4rem",
-              color: "var(--theme-primary)",
-            }}
-          >
-            {course.name}
-          </h3>
-          <p style={{ margin: "0.5em 0" }}>{course.description}</p>
-          <div
-            style={{
-              color: "var(--theme-text-secondary)",
-              fontSize: "0.95em",
-              marginBottom: "1em",
-            }}
-          >
-            <strong style={{ color: "var(--theme-primary)" }}>Schedule:</strong>{" "}
-            {course.schedule} <br />
-            <strong style={{ color: "var(--theme-primary)" }}>
-              Price:
-            </strong>{" "}
-            {course.price > 0 ? `$${course.price.toLocaleString()} USD` : "TBD"}
-          </div>
-          <div>
-            <Button onClick={() => onSelect(course.id)}>
-              View Course Details
-            </Button>
-          </div>
-        </CourseCard>
-      ))}
+      {courses.map((course) => {
+        const hasSessions = course.sessions && course.sessions.length > 0;
+        const isComingSoon = !course.available || !hasSessions;
+        
+        return (
+          <CourseCard key={course.id}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: "1.4rem",
+                color: "var(--theme-primary)",
+              }}
+            >
+              {course.name}
+            </h3>
+            <p style={{ margin: "0.5em 0" }}>{course.description}</p>
+            <div
+              style={{
+                color: "var(--theme-text-secondary)",
+                fontSize: "0.95em",
+                marginBottom: "1em",
+              }}
+            >
+              <strong style={{ color: "var(--theme-primary)" }}>Schedule:</strong>{" "}
+              {course.schedule} <br />
+              <strong style={{ color: "var(--theme-primary)" }}>
+                Price:
+              </strong>{" "}
+              {course.price > 0 ? `$${course.price.toLocaleString()} USD` : "TBD"} <br />
+              <strong style={{ color: "var(--theme-primary)" }}>Status:</strong>{" "}
+              {isComingSoon ? "Coming Soon" : "Enrollment Open"}
+            </div>
+            <div>
+              <Button onClick={() => onSelect(course.id)}>
+                View Course Details
+              </Button>
+            </div>
+          </CourseCard>
+        );
+      })}
     </Section>
   );
 }
@@ -117,6 +124,9 @@ export function CourseDetail({
   onRegister: (courseId: string) => void;
   onLessonClick: (lesson: Lesson) => void;
 }) {
+  const hasSessions = course.sessions && course.sessions.length > 0;
+  const isComingSoon = !course.available || !hasSessions;
+
   return (
     <Section>
       <button
@@ -149,7 +159,9 @@ export function CourseDetail({
         >
           {course.name}
         </h2>
-        <Button onClick={() => onRegister(course.id)}>Enroll Now</Button>
+        <Button onClick={() => onRegister(course.id)} disabled={isComingSoon}>
+          {isComingSoon ? "Coming Soon" : "Enroll Now"}
+        </Button>
       </div>
 
       <p style={{ fontSize: "1.1rem", lineHeight: 1.6, margin: "1.5em 0" }}>
@@ -185,7 +197,17 @@ export function CourseDetail({
         <strong style={{ color: "var(--theme-primary)" }}>
           Available:
         </strong>{" "}
-        {course.available ? "Yes" : `Coming Soon`}
+        {isComingSoon ? (
+          "Coming Soon"
+        ) : (
+          <ul style={{ listStyle: "none", padding: 0, margin: "0.5em 0 0 0", display: "inline-block", verticalAlign: "top" }}>
+            {course.sessions?.map((s, i) => (
+              <li key={i}>
+                {s.label ? `${s.label}: ` : ""}{s.startDate} to {s.endDate}
+              </li>
+            ))}
+          </ul>
+        )}
         <br />
         <strong style={{ color: "var(--theme-primary)" }}>Payment:</strong>{" "}
         {course.paymentInstructions}

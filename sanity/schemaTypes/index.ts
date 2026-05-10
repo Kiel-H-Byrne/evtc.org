@@ -17,6 +17,8 @@ const studentType: SchemaTypeDefinition = {
     { name: "courseId", title: "Course ID", type: "string" },
     { name: "courseName", title: "Course Name", type: "string" },
     { name: "sessionDates", title: "Session Dates", type: "string" },
+    { name: "schedule", title: "Schedule", type: "string" },
+    { name: "price", title: "Price Paid", type: "number" },
     {
       name: "requiresTransportation",
       title: "Requires Transportation",

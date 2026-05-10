@@ -234,6 +234,8 @@ export function RegistrationForm({
         body: JSON.stringify({
           ...form,
           courseName: selectedCourse?.name ?? "",
+          schedule: selectedCourse?.schedule ?? "",
+          price: selectedCourse?.price ?? 0,
         }),
       });
       setPaymentSuccessful(true);
@@ -275,7 +277,7 @@ export function RegistrationForm({
               >
                 <option value="">-- Choose a course --</option>
                 {courses
-                  .filter((c) => c.available)
+                  .filter((c) => c.available && c.sessions && c.sessions.length > 0)
                   .map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name} (
@@ -539,6 +541,11 @@ export function RegistrationForm({
               <p>
                 <strong>Course:</strong> {selectedCourse.name}
               </p>
+              {selectedCourse.schedule && (
+                <p>
+                  <strong>Schedule:</strong> {selectedCourse.schedule}
+                </p>
+              )}
               {form.sessionDates && (
                 <p>
                   <strong>Session:</strong> {form.sessionDates}
