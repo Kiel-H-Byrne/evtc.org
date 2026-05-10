@@ -19,6 +19,7 @@ export async function fetchCourses(): Promise<Course[]> {
       paymentInstructions,
       available,
       availableDate,
+      sessions,
       lessons[]->{
         "id": _id,
         name,
