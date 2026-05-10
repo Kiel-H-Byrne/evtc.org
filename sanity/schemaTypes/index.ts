@@ -15,6 +15,8 @@ const studentType: SchemaTypeDefinition = {
     { name: "phone", title: "Phone Number", type: "string" },
     { name: "email", title: "Email", type: "string" },
     { name: "courseId", title: "Course ID", type: "string" },
+    { name: "courseName", title: "Course Name", type: "string" },
+    { name: "sessionDates", title: "Session Dates", type: "string" },
     {
       name: "requiresTransportation",
       title: "Requires Transportation",
@@ -38,6 +40,7 @@ const studentType: SchemaTypeDefinition = {
       type: "boolean",
     },
     { name: "howHeard", title: "How They Heard", type: "string" },
+    { name: "agreeToPay", title: "Agreed to Pay", type: "boolean" },
     { name: "registeredAt", title: "Registered At", type: "datetime" },
   ],
 };

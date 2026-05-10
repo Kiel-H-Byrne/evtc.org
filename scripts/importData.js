@@ -4,7 +4,7 @@ const path = require("path");
 
 const client = createClient({
   projectId: process.env.SANITY_STUDIO_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  dataset: process.env.SANITY_STUDIO_DATASET || "production",
   token: process.env.SANITY_WRITE_TOKEN,
   apiVersion: "2024-01-01",
   useCdn: false,
@@ -49,7 +49,7 @@ async function importData() {
       if (course.lessons) {
         for (const lesson of course.lessons) {
           const sanityLessonId = `lesson-${lesson.id}`;
-          
+
           // Format resources to add _key
           const formattedResources = lesson.resources?.map((res, index) => ({
             _key: `res-${index}-${Date.now()}`,
@@ -65,7 +65,7 @@ async function importData() {
             name: lesson.name,
             resources: formattedResources,
           });
-          
+
           lessonRefs.push({
             _key: `ref-${lesson.id}-${Date.now()}`,
             _type: "reference",
