@@ -4,8 +4,8 @@ import path from "path";
 
 
 const client = createClient({
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID,
-  dataset: process.env.SANITY_STUDIO_DATASET || "production",
+  projectId: process.env.NEXT_PUBLIC_SANITY_STUDIO_PROJECT_ID || process.env.SANITY_STUDIO_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_STUDIO_DATASET || process.env.SANITY_STUDIO_DATASET || "production",
   token: process.env.SANITY_WRITE_TOKEN,
   apiVersion: "2024-01-01",
   useCdn: false,
