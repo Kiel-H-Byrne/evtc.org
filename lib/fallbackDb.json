@@ -118,6 +118,13 @@
       "priceNote": "USD (Debit Card Only)",
       "available": false,
       "availableDate": "2027-01-01",
+      "sessions": [
+        {
+          "startDate": "2026-06-08",
+          "endDate": "2026-06-14",
+          "label": "Summer Cohort"
+        }
+      ],
       "lessons": [
         {
           "id": "lesson-2-1",
@@ -294,4 +301,6 @@
   "contact": {
     "email": "elitehigherlearning@gmail.com"
   }
+}
+
 }
