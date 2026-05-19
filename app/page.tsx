@@ -40,9 +40,10 @@ export default function HomePage() {
       if (!active) return;
 
       if (!fetchedCourses || fetchedCourses.length === 0) {
-        setCourses(dbFallback.courses as unknown as Course[]);
-        setAbout(dbFallback.about as AboutContent);
-        setContact(dbFallback.contact as ContactContent);
+        const fallback = dbFallback as any;
+        setCourses(fallback.courses as Course[]);
+        setAbout(fallback.about as AboutContent);
+        setContact(fallback.contact as ContactContent);
       } else {
         setCourses(fetchedCourses);
         setAbout(fetchedAbout);
