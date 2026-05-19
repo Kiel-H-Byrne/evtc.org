@@ -20,7 +20,7 @@ function yesNo(val: boolean) {
   return val ? "Yes" : "No";
 }
 
-function adminHtml(data: Student & { courseName: string }) {
+function adminHtml(data: Student & { courseName: string; schedule: string; price: number }) {
   return `
     <h2>New Student Registration</h2>
     <table cellpadding="6" style="border-collapse:collapse;">
@@ -31,6 +31,8 @@ function adminHtml(data: Student & { courseName: string }) {
       <tr><td><strong>Email</strong></td><td>${data.email}</td></tr>
       <tr><td><strong>Course</strong></td><td>${data.courseName}</td></tr>
       ${data.sessionDates ? `<tr><td><strong>Session</strong></td><td>${data.sessionDates}</td></tr>` : ""}
+      <tr><td><strong>Schedule</strong></td><td>${data.schedule || "—"}</td></tr>
+      <tr><td><strong>Amount Paid</strong></td><td>$${data.price.toLocaleString()}</td></tr>
       <tr><td><strong>Requires Transportation</strong></td><td>${yesNo(data.requiresTransportation)}</td></tr>
       <tr><td><strong>Traveling From</strong></td><td>${data.travelingFrom || "—"}</td></tr>
       <tr><td><strong>Physical Limitations</strong></td><td>${yesNo(data.physicalLimitations)}</td></tr>
@@ -42,10 +44,23 @@ function adminHtml(data: Student & { courseName: string }) {
   `;
 }
 
-function studentHtml(data: { name: string; courseName: string; sessionDates?: string }) {
+function studentHtml(data: Student & { courseName: string; schedule: string; price: number }) {
   return `
     <h2>Thank you for registering, ${data.name}!</h2>
-    <p>Your registration for <strong>${data.courseName}</strong> ${data.sessionDates ? `(${data.sessionDates}) ` : ""}at Elite Vocational Training Center has been received.</p>
+    <p>Your registration for <strong>${data.courseName}</strong> at Elite Vocational Training Center has been received.</p>
+    
+    <h3>Your Registration Details:</h3>
+    <table cellpadding="6" style="border-collapse:collapse;">
+      <tr><td><strong>Course</strong></td><td>${data.courseName}</td></tr>
+      ${data.sessionDates ? `<tr><td><strong>Session</strong></td><td>${data.sessionDates}</td></tr>` : ""}
+      <tr><td><strong>Schedule</strong></td><td>${data.schedule || "—"}</td></tr>
+      <tr><td><strong>Amount Paid</strong></td><td>$${data.price.toLocaleString()}</td></tr>
+      <tr><td><strong>Full Name</strong></td><td>${data.name}</td></tr>
+      <tr><td><strong>Email</strong></td><td>${data.email}</td></tr>
+      <tr><td><strong>Phone</strong></td><td>${data.phone}</td></tr>
+      <tr><td><strong>Address</strong></td><td>${data.address}</td></tr>
+    </table>
+
     <p>Our team will be in touch with next steps. If you have any questions, reply to this email or contact us at ${ADMIN_EMAIL}.</p>
     <p>— Elite VTC Team</p>
   `;
@@ -53,7 +68,7 @@ function studentHtml(data: { name: string; courseName: string; sessionDates?: st
 
 export async function POST(req: Request) {
   try {
-    const body: Student & { courseName: string } = await req.json();
+    const body: Student & { courseName: string; schedule: string; price: number } = await req.json();
 
     await writeClient.create({
       _type: "student",

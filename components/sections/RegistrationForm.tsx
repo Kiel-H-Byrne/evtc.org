@@ -1,5 +1,5 @@
 "use client";
-import type { Course } from "@/components/cms/types";
+import type { Course, CourseSession } from "@/components/cms/types";
 import {
   Button,
   ButtonOutline,
@@ -17,6 +17,44 @@ import { StripePaymentForm } from "./StripePaymentForm";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
+
+function getOrdinalSuffix(day: number) {
+  if (day > 3 && day < 21) return "th";
+  switch (day % 10) {
+    case 1: return "st";
+    case 2: return "nd";
+    case 3: return "rd";
+    default: return "th";
+  }
+}
+
+function formatDate(dateStr: string) {
+  const date = new Date(dateStr + "T00:00:00");
+  const month = date.toLocaleString("en-US", { month: "long" });
+  const day = date.getDate();
+  const year = date.getFullYear();
+  return `${month} ${day}${getOrdinalSuffix(day)}, ${year}`;
+}
+
+function formatSessionRange(session: CourseSession) {
+  const start = new Date(session.startDate + "T00:00:00");
+  const end = new Date(session.endDate + "T00:00:00");
+  
+  const startMonth = start.toLocaleString("en-US", { month: "long" });
+  const endMonth = end.toLocaleString("en-US", { month: "long" });
+  const startDay = start.getDate();
+  const endDay = end.getDate();
+  const startYear = start.getFullYear();
+  const endYear = end.getFullYear();
+
+  if (startYear === endYear) {
+    if (startMonth === endMonth) {
+      return `${startMonth} ${startDay}${getOrdinalSuffix(startDay)} - ${endDay}${getOrdinalSuffix(endDay)}, ${startYear}`;
+    }
+    return `${startMonth} ${startDay}${getOrdinalSuffix(startDay)} - ${endMonth} ${endDay}${getOrdinalSuffix(endDay)}, ${startYear}`;
+  }
+  return `${formatDate(session.startDate)} - ${formatDate(session.endDate)}`;
+}
 
 type FormState = {
   courseId: string;
@@ -234,6 +272,8 @@ export function RegistrationForm({
         body: JSON.stringify({
           ...form,
           courseName: selectedCourse?.name ?? "",
+          schedule: selectedCourse?.schedule ?? "",
+          price: selectedCourse?.price ?? 0,
         }),
       });
       setPaymentSuccessful(true);
@@ -275,7 +315,7 @@ export function RegistrationForm({
               >
                 <option value="">-- Choose a course --</option>
                 {courses
-                  .filter((c) => c.available)
+                  .filter((c) => c.available && c.sessions && c.sessions.length > 0)
                   .map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name} (
@@ -297,11 +337,12 @@ export function RegistrationForm({
                 >
                   <option value="">-- Choose a session --</option>
                   {selectedCourse.sessions.map((s, idx) => {
+                    const dateRange = formatSessionRange(s);
                     const label = s.label
-                      ? `${s.label} (${s.startDate} to ${s.endDate})`
-                      : `${s.startDate} to ${s.endDate}`;
+                      ? `${s.label} (${dateRange})`
+                      : dateRange;
                     return (
-                      <option key={idx} value={`${s.startDate} to ${s.endDate}`}>
+                      <option key={idx} value={dateRange}>
                         {label}
                       </option>
                     );
@@ -539,6 +580,11 @@ export function RegistrationForm({
               <p>
                 <strong>Course:</strong> {selectedCourse.name}
               </p>
+              {selectedCourse.schedule && (
+                <p>
+                  <strong>Schedule:</strong> {selectedCourse.schedule}
+                </p>
+              )}
               {form.sessionDates && (
                 <p>
                   <strong>Session:</strong> {form.sessionDates}

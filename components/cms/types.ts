@@ -62,7 +62,10 @@ export type Student = {
   phone: string;
   email: string;
   courseId: string;
+  courseName?: string;
   sessionDates?: string;
+  schedule?: string;
+  price?: number;
   requiresTransportation: boolean;
   travelingFrom: string;
   physicalLimitations: boolean;
