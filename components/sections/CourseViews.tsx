@@ -378,12 +378,12 @@ export function CourseDetail({
           <label>Schedule</label>
           <span>{course.schedule}</span>
         </MetaItem>
-        <MetaItem>
+        {/* <MetaItem>
           <label>Price</label>
           <span>
             {course.price > 0 ? `$${course.price.toLocaleString()} USD` : "TBD"}
           </span>
-        </MetaItem>
+        </MetaItem> */}
         {course.extraMaterial && (
           <MetaItem>
             <label>Extra Material</label>
@@ -396,7 +396,7 @@ export function CourseDetail({
             </span>
           </MetaItem>
         )}
-        <MetaItem style={{ gridColumn: "1 / -1" }}>
+        {/* <MetaItem style={{ gridColumn: "1 / -1" }}>
           <label>Payment Instructions</label>
           <span
             style={{ fontSize: "0.95em", color: "var(--theme-text-secondary)" }}
@@ -404,7 +404,7 @@ export function CourseDetail({
             {course.paymentInstructions ||
               "Contact us for business payment options."}
           </span>
-        </MetaItem>
+        </MetaItem> */}
       </MetaGrid>
 
       <h3

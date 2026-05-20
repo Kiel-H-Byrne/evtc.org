@@ -103,10 +103,12 @@ export function ContactEnrollmentForm({
 
   function validate(): boolean {
     const errs: FormErrors = {};
-    if (!form.contactPerson.trim()) errs.contactPerson = "Contact person is required.";
+    if (!form.contactPerson.trim())
+      errs.contactPerson = "Contact person is required.";
     if (!form.email || !/^[^@]+@[^@]+\.[^@]+$/.test(form.email))
       errs.email = "Valid email is required.";
-    if (!form.businessName.trim()) errs.businessName = "Business name is required.";
+    if (!form.businessName.trim())
+      errs.businessName = "Business name is required.";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
@@ -123,7 +125,7 @@ export function ContactEnrollmentForm({
           body: JSON.stringify({
             ...form,
             courseName: selectedCourse?.name ?? "General Inquiry",
-            type: "B2B_INQUIRY"
+            type: "B2B_INQUIRY",
           }),
         });
         setSubmitted(true);
@@ -142,7 +144,7 @@ export function ContactEnrollmentForm({
   function handleChange(
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) {
     const { name, value } = e.target;
     setForm((f) => ({
@@ -155,11 +157,21 @@ export function ContactEnrollmentForm({
     return (
       <Section id="contact">
         <div style={{ textAlign: "center", padding: "2em 0" }}>
-          <h3 style={{ color: "var(--theme-primary)", fontSize: "1.5rem", marginBottom: "0.5em" }}>
+          <h3
+            style={{
+              color: "var(--theme-primary)",
+              fontSize: "1.5rem",
+              marginBottom: "0.5em",
+            }}
+          >
             Inquiry Received
           </h3>
-          <p style={{ color: "var(--theme-text-secondary)", fontSize: "1.1rem" }}>
-            Thank you for reaching out, {form.contactPerson}. We have received your inquiry for <strong>{form.businessName}</strong> and will be in touch shortly.
+          <p
+            style={{ color: "var(--theme-text-secondary)", fontSize: "1.1rem" }}
+          >
+            Thank you for reaching out, {form.contactPerson}. We have received
+            your inquiry for <strong>{form.businessName}</strong> and will be in
+            touch shortly.
           </p>
         </div>
       </Section>
@@ -172,7 +184,8 @@ export function ContactEnrollmentForm({
         Contact &amp; Enrollment
       </h2>
       <p style={{ color: "var(--theme-text-secondary)", marginBottom: "2em" }}>
-        Interested in training your staff? Contact us today to discuss your business needs or enroll a roster of students.
+        Interested in training your staff? Contact us today to discuss your
+        business needs or enroll a roster of team members.
       </p>
 
       <ContactGrid>
@@ -185,7 +198,9 @@ export function ContactEnrollmentForm({
               onChange={handleChange}
               placeholder="Full Name"
             />
-            {errors.contactPerson && <ErrorMsg>{errors.contactPerson}</ErrorMsg>}
+            {errors.contactPerson && (
+              <ErrorMsg>{errors.contactPerson}</ErrorMsg>
+            )}
           </FormRow>
           <FormRow>
             <Label>Business Name *</Label>
@@ -234,7 +249,7 @@ export function ContactEnrollmentForm({
             </Select>
           </FormRow>
           <FormRow>
-            <Label>Expected Number of Students</Label>
+            <Label>Expected Number of Team Members</Label>
             <Input
               name="expectedStudents"
               type="number"
@@ -259,10 +274,19 @@ export function ContactEnrollmentForm({
 
         <DirectContactInfo>
           <h3>Direct Contact</h3>
-          <p>Reach out to us directly via phone or email for immediate assistance with enrollment.</p>
+          <p>
+            Reach out to us directly via phone or email for immediate assistance
+            with enrollment.
+          </p>
           {contactInfo?.email && (
             <p>
-              <strong>Email:</strong> <a href={`mailto:${contactInfo.email}`} style={{ color: "var(--theme-primary)" }}>{contactInfo.email}</a>
+              <strong>Email:</strong>{" "}
+              <a
+                href={`mailto:${contactInfo.email}`}
+                style={{ color: "var(--theme-primary)" }}
+              >
+                {contactInfo.email}
+              </a>
             </p>
           )}
           {contactInfo?.phone && (
@@ -272,7 +296,8 @@ export function ContactEnrollmentForm({
           )}
           {contactInfo?.address && (
             <p>
-              <strong>Address:</strong><br />
+              <strong>Address:</strong>
+              <br />
               {contactInfo.address}
             </p>
           )}

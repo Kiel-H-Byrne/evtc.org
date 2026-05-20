@@ -24,7 +24,7 @@ function b2bAdminHtml(data: B2BInquiry) {
       <tr><td><strong>Email</strong></td><td>${data.email}</td></tr>
       <tr><td><strong>Phone</strong></td><td>${data.phone || "—"}</td></tr>
       <tr><td><strong>Course of Interest</strong></td><td>${data.courseName}</td></tr>
-      <tr><td><strong>Expected Students</strong></td><td>${data.expectedStudents || "—"}</td></tr>
+      <tr><td><strong>Expected Team Members</strong></td><td>${data.expectedStudents || "—"}</td></tr>
       <tr><td><strong>Message</strong></td><td>${data.message || "—"}</td></tr>
     </table>
   `;
@@ -36,7 +36,7 @@ function b2bClientHtml(data: B2BInquiry) {
     <p>We have received your inquiry for <strong>${data.businessName}</strong> regarding the <strong>${data.courseName}</strong>.</p>
     <p>Our team will review your request and get back to you shortly to discuss training your staff.</p>
     <br/>
-    <p>— Elite VTC Team</p>
+    <p>— EVTC Team</p>
   `;
 }
 
