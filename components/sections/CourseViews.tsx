@@ -4,6 +4,7 @@ import { Button, CourseCard, Section } from "@/components/ui/Styled";
 import styled from "styled-components";
 import React, { useState } from "react";
 import { urlFor } from "@/sanity/lib/image";
+import Link from "next/link";
 
 const LessonList = styled.ul`
   list-style: none;
@@ -172,10 +173,8 @@ function MediaViewer({ items }: { items: MediaItem[] }) {
 
 export function CourseList({
   courses,
-  onSelect,
 }: {
   courses: Course[];
-  onSelect: (id: string) => void;
 }) {
   if (courses.length === 0) {
     return (
@@ -270,9 +269,11 @@ export function CourseList({
             </div>
 
             <div style={{ marginTop: "1em" }}>
-              <Button onClick={() => onSelect(course.id)}>
-                View Course Details
-              </Button>
+              <Link href={`/courses/${course.slug || course.id}`} style={{ textDecoration: 'none' }}>
+                <Button as="div">
+                  View Course Details
+                </Button>
+              </Link>
             </div>
           </CourseCard>
         );
@@ -283,35 +284,26 @@ export function CourseList({
 
 export function CourseDetail({
   course,
-  onBack,
-  onRegister,
+  onLessonClick,
 }: {
   course: Course;
-  onBack: () => void;
-  onRegister: (courseId: string) => void;
   onLessonClick: (lesson: Lesson) => void;
 }) {
   const isComingSoon = !course.available;
 
   return (
     <Section>
-      <button
-        style={{
-          background: "none",
-          border: "none",
-          color: "var(--theme-text-secondary)",
-          cursor: "pointer",
-          marginBottom: "1.5em",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5em",
-          padding: 0,
-          fontSize: "0.95rem",
-        }}
-        onClick={onBack}
-      >
+      <Link href="/courses" style={{ 
+        color: "var(--theme-text-secondary)",
+        marginBottom: "1.5em",
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5em",
+        fontSize: "0.95rem",
+        textDecoration: 'none'
+      }}>
         <span>←</span> Back to Courses
-      </button>
+      </Link>
 
       {course.media && course.media.length > 0 && (
         <MediaViewer items={course.media} />
@@ -340,9 +332,11 @@ export function CourseDetail({
           <StatusBadge active={!isComingSoon}>
             {isComingSoon ? "Coming Soon" : "Enrollment Open"}
           </StatusBadge>
-          <Button onClick={() => onRegister(course.id)} disabled={isComingSoon}>
-            {isComingSoon ? "Coming Soon" : "Enroll Now"}
-          </Button>
+          <Link href={isComingSoon ? "#" : `/contact?courseId=${course.slug || course.id}`} style={{ textDecoration: 'none' }}>
+            <Button as="div" disabled={isComingSoon}>
+              {isComingSoon ? "Coming Soon" : "Enroll Now"}
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -410,13 +404,13 @@ export function CourseDetail({
           </li>
         ) : (
           course.lessons.map((lesson) => (
-            <LessonItem key={lesson.id}>
+            <LessonItem key={lesson.id} onClick={() => onLessonClick(lesson)} style={{ cursor: 'pointer' }}>
               <div
                 style={{
                   fontWeight: 500,
                   display: "flex",
                   alignItems: "center",
-                  color: "var(--theme-text)",
+                  color: 'var(--theme-text)'
                 }}
               >
                 {lesson.name}

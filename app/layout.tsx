@@ -3,6 +3,12 @@ import { tokens } from "@/lib/theme";
 import type { Metadata } from "next";
 import { Roboto_Slab, Open_Sans } from "next/font/google";
 import "./globals.css";
+import { NavigationBar } from "@/components/layout/Navigation";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/ui/Styled";
+import Image from "next/image";
+import styled from "styled-components";
+import { fetchCourses } from "@/components/cms/content";
 
 const robotoSlab = Roboto_Slab({
   variable: "--font-heading",
@@ -32,11 +38,13 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const courses = await fetchCourses().catch(() => []);
+
   return (
     <html lang="en">
       <body className={`${robotoSlab.variable} ${openSans.variable}`}>
@@ -48,7 +56,35 @@ export default function RootLayout({
             --theme-foreground: ${tokens.colors.text};
           }
         `}</style>
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Header>
+              <div style={{ padding: '2em 1em' }}>
+                <h1 style={{ marginBottom: '0.5em', fontFamily: "var(--font-heading)", fontSize: "2.5rem", color: "var(--theme-text-secondary)" }}>
+                  Elite Vocational Training Center
+                </h1>
+                <div style={{ position: 'relative', width: '100%', maxWidth: '800px', margin: '1em auto' }}>
+                  <Image 
+                    src="/img/EVTC Website.png" 
+                    alt="EVTC Website" 
+                    width={800} 
+                    height={300} 
+                    style={{ width: '100%', height: 'auto', borderRadius: '12px' }} 
+                    priority
+                  />
+                </div>
+              </div>
+            </Header>
+
+            <NavigationBar courses={courses} />
+
+            <main style={{ flex: 1, width: '100%', maxWidth: '900px', margin: '2em auto', padding: '0 1em' }}>
+              {children}
+            </main>
+
+            <Footer />
+          </div>
+        </AppProviders>
       </body>
     </html>
   );
