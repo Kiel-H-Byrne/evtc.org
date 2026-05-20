@@ -26,7 +26,7 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: "Elite Vocational Training Center",
   description:
-    "EVTC is a private trade school dedicated to training students in home improvement and refinishing in Pennsylvania.",
+    "EVTC is a private trade school dedicated to training your team in home improvement and refinishing in Pennsylvania.",
   keywords: [
     "vocational training",
     "EVTC",
