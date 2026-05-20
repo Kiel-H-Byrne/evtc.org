@@ -10,13 +10,6 @@ import {
 } from "@/components/ui/Styled";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { StripePaymentForm } from "./StripePaymentForm";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
 
 function getOrdinalSuffix(day: number) {
   if (day > 3 && day < 21) return "th";
@@ -134,14 +127,6 @@ const Step = styled.div<{ active?: boolean; past?: boolean }>`
   transition: ${(p) => p.theme.transitions.default};
 `;
 
-const CheckOutBox = styled.div`
-  background: ${(p) => p.theme.colors.background};
-  border: 1px solid ${(p) => p.theme.colors.border};
-  border-radius: ${(p) => p.theme.radii.medium}px;
-  padding: 1.5em;
-  margin-bottom: 1.5em;
-`;
-
 const RadioGroup = styled.div`
   display: flex;
   gap: 1.5em;
@@ -170,13 +155,10 @@ export function RegistrationForm({
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
 
   const steps = [
     "Course Selection",
     "Student Registration",
-    "Payment",
     "Confirmation",
   ];
 
@@ -210,32 +192,29 @@ export function RegistrationForm({
   async function next() {
     if (validate()) {
       if (step === 1) {
-        // Create payment intent when moving to payment step
-        const selectedCourse = courses.find((c) => c.id === form.courseId);
-        if (selectedCourse && selectedCourse.price > 0) {
-          setSubmitting(true);
-          try {
-            const res = await fetch("/api/create-payment-intent", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                amount: selectedCourse.price * 100, // amount in cents
-                currency: "usd",
-              }),
-            });
-            const { clientSecret } = await res.json();
-            setClientSecret(clientSecret);
-          } catch (error) {
-            console.error(error);
-            setErrors({
-              ...errors,
-              agreeToPay: "Failed to create payment intent.",
-            });
-            return;
-          } finally {
-            setSubmitting(false);
-          }
+        setSubmitting(true);
+        try {
+          await fetch("/api/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...form,
+              courseName: selectedCourse?.name ?? "",
+              schedule: selectedCourse?.schedule ?? "",
+              price: selectedCourse?.price ?? 0,
+            }),
+          });
+          setStep(2); // Go to confirmation
+        } catch (error) {
+          console.error(error);
+          setErrors({
+            ...errors,
+            name: "Failed to submit registration.",
+          });
+        } finally {
+          setSubmitting(false);
         }
+        return;
       }
       setStep((s) => s + 1);
     }
@@ -263,26 +242,6 @@ export function RegistrationForm({
     }));
   }
 
-  async function handleSuccessfulPayment() {
-    setSubmitting(true);
-    try {
-      await fetch("/api/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          courseName: selectedCourse?.name ?? "",
-          schedule: selectedCourse?.schedule ?? "",
-          price: selectedCourse?.price ?? 0,
-        }),
-      });
-      setPaymentSuccessful(true);
-    } finally {
-      setSubmitting(false);
-      setStep(3);
-    }
-  }
-
   const selectedCourse = courses.find((c) => c.id === form.courseId);
 
   return (
@@ -291,7 +250,7 @@ export function RegistrationForm({
         Enroll &amp; Register
       </h2>
       <p style={{ color: "var(--theme-text-secondary)", marginBottom: "2em" }}>
-        Complete your course registration in four simple steps.
+        Complete your course registration.
       </p>
 
       <Stepper>
@@ -543,7 +502,7 @@ export function RegistrationForm({
                   No
                 </RadioLabel>
               </RadioGroup>
-            </FormRow>
+            </RadioGroup>
             <FormRow>
               <Label>How did you hear about the training program?</Label>
               <Input
@@ -564,55 +523,14 @@ export function RegistrationForm({
                 Back
               </ButtonOutline>
               <Button type="button" onClick={next} disabled={submitting}>
-                {submitting ? "Processing..." : "Continue to Payment"}
+                {submitting ? "Processing..." : "Submit Registration"}
               </Button>
             </div>
           </div>
         )}
 
-        {/* Step 2 — Payment */}
-        {step === 2 && selectedCourse && (
-          <Elements stripe={stripePromise}>
-            <CheckOutBox>
-              <h3 style={{ margin: "0 0 1em 0", fontSize: "1.2rem" }}>
-                Payment Details
-              </h3>
-              <p>
-                <strong>Course:</strong> {selectedCourse.name}
-              </p>
-              {selectedCourse.schedule && (
-                <p>
-                  <strong>Schedule:</strong> {selectedCourse.schedule}
-                </p>
-              )}
-              {form.sessionDates && (
-                <p>
-                  <strong>Session:</strong> {form.sessionDates}
-                </p>
-              )}
-              <p>
-                <strong>Total Due:</strong> $
-                {selectedCourse.price.toLocaleString()}
-              </p>
-              {clientSecret ? (
-                <StripePaymentForm
-                  clientSecret={clientSecret}
-                  onSuccess={handleSuccessfulPayment}
-                />
-              ) : (
-                <p>Loading payment form...</p>
-              )}
-            </CheckOutBox>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <ButtonOutline type="button" onClick={handleBack}>
-                Back
-              </ButtonOutline>
-            </div>
-          </Elements>
-        )}
-
-        {/* Step 3 — Confirmation */}
-        {step === 3 && (
+        {/* Step 2 — Confirmation */}
+        {step === 2 && (
           <div style={{ textAlign: "center", padding: "2em 0" }}>
             <h3
               style={{
@@ -623,11 +541,6 @@ export function RegistrationForm({
             >
               Welcome to Elite Vocational Training Center!
             </h3>
-            {paymentSuccessful && (
-              <p style={{ color: "green", fontSize: "1.1rem" }}>
-                Your payment was successful!
-              </p>
-            )}
             <p style={{ color: "#6E6E6E", fontSize: "1.1rem" }}>
               Thank you, {form.name}. Your registration for{" "}
               <strong>{selectedCourse?.name}</strong>{" "}
