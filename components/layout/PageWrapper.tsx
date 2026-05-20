@@ -47,12 +47,20 @@ export function PageWrapper({
   return (
     <AppContainer>
       <Header>
-        <h1 style={{ marginBottom: 0, fontFamily: "var(--font-heading)", fontSize: "2.2rem", color: "var(--theme-text-secondary)" }}>
-          Elite Vocational Training Center
-        </h1>
-        <div style={{ margin: "1em 0" }}>
-          {/* <HeroSVG /> */}
-          <Image src="/img/EVTC Website.png" alt="EVTC Website" width={320} height={120} style={{ margin: "auto" }} />
+        <div style={{ padding: '2em 1em' }}>
+          <h1 style={{ marginBottom: '0.5em', fontFamily: "var(--font-heading)", fontSize: "2.5rem", color: "var(--theme-text-secondary)" }}>
+            Elite Vocational Training Center
+          </h1>
+          <div style={{ position: 'relative', width: '100%', maxWidth: '800px', margin: '1em auto' }}>
+            <Image 
+              src="/img/EVTC Website.png" 
+              alt="EVTC Website" 
+              width={800} 
+              height={300} 
+              style={{ width: '100%', height: 'auto', borderRadius: '12px' }} 
+              priority
+            />
+          </div>
         </div>
       </Header>
 
