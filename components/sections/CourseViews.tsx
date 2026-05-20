@@ -1,7 +1,9 @@
 "use client";
-import type { Course, CourseSession, Lesson } from "@/components/cms/types";
+import type { Course, Lesson, MediaItem } from "@/components/cms/types";
 import { Button, CourseCard, Section } from "@/components/ui/Styled";
 import styled from "styled-components";
+import React, { useState } from "react";
+import { urlFor } from "@/sanity/lib/image";
 
 const LessonList = styled.ul`
   list-style: none;
@@ -18,17 +20,6 @@ const LessonItem = styled.li`
   &:last-child {
     border-bottom: none;
   }
-`;
-
-const SessionBadge = styled.span`
-  display: inline-block;
-  background: ${(p) => p.theme.colors.accent}22;
-  color: ${(p) => p.theme.colors.primary};
-  padding: 0.3em 0.8em;
-  border-radius: 20px;
-  font-size: 0.85em;
-  font-weight: 600;
-  border: 1px solid ${(p) => p.theme.colors.accent}44;
 `;
 
 const StatusBadge = styled.span<{ active?: boolean }>`
@@ -75,46 +66,108 @@ const MetaItem = styled.div`
   }
 `;
 
-function getOrdinalSuffix(day: number) {
-  if (day > 3 && day < 21) return "th";
-  switch (day % 10) {
-    case 1:
-      return "st";
-    case 2:
-      return "nd";
-    case 3:
-      return "rd";
-    default:
-      return "th";
+const MediaContainer = styled.div`
+  width: 100%;
+  margin-bottom: 2em;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16 / 9;
+  position: relative;
+`;
+
+const Carousel = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
   }
-}
+`;
 
-function formatDate(dateStr: string) {
-  const date = new Date(dateStr + "T00:00:00");
-  const month = date.toLocaleString("en-US", { month: "long" });
-  const day = date.getDate();
-  const year = date.getFullYear();
-  return `${month} ${day}${getOrdinalSuffix(day)}, ${year}`;
-}
-
-function formatSessionRange(session: CourseSession) {
-  const start = new Date(session.startDate + "T00:00:00");
-  const end = new Date(session.endDate + "T00:00:00");
-
-  const startMonth = start.toLocaleString("en-US", { month: "long" });
-  const endMonth = end.toLocaleString("en-US", { month: "long" });
-  const startDay = start.getDate();
-  const endDay = end.getDate();
-  const startYear = start.getFullYear();
-  const endYear = end.getFullYear();
-
-  if (startYear === endYear) {
-    if (startMonth === endMonth) {
-      return `${startMonth} ${startDay}${getOrdinalSuffix(startDay)} - ${endDay}${getOrdinalSuffix(endDay)}, ${startYear}`;
-    }
-    return `${startMonth} ${startDay}${getOrdinalSuffix(startDay)} - ${endMonth} ${endDay}${getOrdinalSuffix(endDay)}, ${startYear}`;
+const CarouselItem = styled.div`
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  position: relative;
+  img, iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
   }
-  return `${formatDate(session.startDate)} - ${formatDate(session.endDate)}`;
+`;
+
+const CarouselNav = styled.div`
+  position: absolute;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5em;
+`;
+
+const NavDot = styled.button<{ active: boolean }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: ${(p) => (p.active ? p.theme.colors.accent : "rgba(255,255,255,0.5)")};
+  cursor: pointer;
+  padding: 0;
+`;
+
+function MediaViewer({ items }: { items: MediaItem[] }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = React.useRef<HTMLDivElement>(null);
+
+  if (!items || items.length === 0) return null;
+
+  return (
+    <MediaContainer>
+      <Carousel 
+        ref={carouselRef}
+        onScroll={(e) => {
+          const target = e.currentTarget;
+          const index = Math.round(target.scrollLeft / target.offsetWidth);
+          if (index !== activeIndex) setActiveIndex(index);
+        }}
+      >
+        {items.map((item, i) => (
+          <CarouselItem key={i}>
+            {item._type === "image" ? (
+              <img src={urlFor(item.asset).url()} alt={item.caption || "Course media"} />
+            ) : (
+              <iframe
+                src={item.url}
+                title={item.caption || "Course video"}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+          </CarouselItem>
+        ))}
+      </Carousel>
+      {items.length > 1 && (
+        <CarouselNav>
+          {items.map((_, i) => (
+            <NavDot key={i} active={i === activeIndex} onClick={() => {
+              if (carouselRef.current) {
+                carouselRef.current.scrollTo({
+                  left: carouselRef.current.offsetWidth * i,
+                  behavior: 'smooth'
+                });
+              }
+            }} />
+          ))}
+        </CarouselNav>
+      )}
+    </MediaContainer>
+  );
 }
 
 export function CourseList({
@@ -139,8 +192,7 @@ export function CourseList({
         Training Courses
       </h2>
       {courses.map((course) => {
-        const hasSessions = course.sessions && course.sessions.length > 0;
-        const isComingSoon = !course.available || !hasSessions;
+        const isComingSoon = !course.available;
 
         return (
           <CourseCard key={course.id}>
@@ -175,14 +227,6 @@ export function CourseList({
             >
               {course.description}
             </p>
-
-            {hasSessions && (
-              <div style={{ margin: "0.5em 0" }}>
-                <SessionBadge>
-                  Next Session: {formatSessionRange(course.sessions![0])}
-                </SessionBadge>
-              </div>
-            )}
 
             <div
               style={{
@@ -241,15 +285,13 @@ export function CourseDetail({
   course,
   onBack,
   onRegister,
-  onLessonClick,
 }: {
   course: Course;
   onBack: () => void;
   onRegister: (courseId: string) => void;
   onLessonClick: (lesson: Lesson) => void;
 }) {
-  const hasSessions = course.sessions && course.sessions.length > 0;
-  const isComingSoon = !course.available || !hasSessions;
+  const isComingSoon = !course.available;
 
   return (
     <Section>
@@ -270,6 +312,10 @@ export function CourseDetail({
       >
         <span>←</span> Back to Courses
       </button>
+
+      {course.media && course.media.length > 0 && (
+        <MediaViewer items={course.media} />
+      )}
 
       <div
         style={{
@@ -311,16 +357,6 @@ export function CourseDetail({
         >
           {course.description}
         </p>
-        {hasSessions && (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.8em" }}>
-            <strong style={{ color: "var(--theme-primary)" }}>
-              Upcoming Session:
-            </strong>
-            <SessionBadge style={{ fontSize: "1rem" }}>
-              {formatSessionRange(course.sessions![0])}
-            </SessionBadge>
-          </div>
-        )}
       </div>
 
       <MetaGrid>
@@ -346,29 +382,12 @@ export function CourseDetail({
             </span>
           </MetaItem>
         )}
-        <MetaItem>
-          <label>Available Dates</label>
-          {isComingSoon ? (
-            <span>Coming Soon</span>
-          ) : (
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {course.sessions?.map((s, i) => (
-                <li key={i} style={{ marginBottom: "0.2em" }}>
-                  {s.label && (
-                    <strong style={{ fontSize: "0.9em" }}>{s.label}: </strong>
-                  )}
-                  {formatSessionRange(s)}
-                </li>
-              ))}
-            </ul>
-          )}
-        </MetaItem>
         <MetaItem style={{ gridColumn: "1 / -1" }}>
           <label>Payment Instructions</label>
           <span
             style={{ fontSize: "0.95em", color: "var(--theme-text-secondary)" }}
           >
-            {course.paymentInstructions}
+            {course.paymentInstructions || "Contact us for business payment options."}
           </span>
         </MetaItem>
       </MetaGrid>

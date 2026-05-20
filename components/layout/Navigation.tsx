@@ -130,8 +130,7 @@ export function NavigationBar({ currentTab, onTabChange, courses, selectedCourse
   const tabs = [
     { key: "about", label: "About Us" },
     { key: "courses", label: "Training Courses" },
-    { key: "contact", label: "Contact Us" },
-    { key: "registration", label: "Registration" }
+    { key: "contact", label: "Contact & Enrollment" }
   ];
 
   return (

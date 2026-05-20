@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { Section } from "@/components/ui/Styled";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { RegistrationForm } from "@/components/sections/RegistrationForm";
+import { ContactEnrollmentForm } from "@/components/sections/ContactEnrollmentForm";
 import { CourseList, CourseDetail } from "@/components/sections/CourseViews";
 import { LessonModal } from "@/components/sections/LessonModal";
-import { AboutSection, ContactSection } from "@/components/sections/InfoSections";
+import { AboutSection } from "@/components/sections/InfoSections";
 import { useCms } from "@/components/cms/useCms";
 import type { Course, Lesson, AboutContent, ContactContent } from "@/components/cms/types";
 
@@ -73,7 +73,7 @@ export default function HomePage() {
 
   function handleStartRegistration(courseId: string) {
     setSelectedCourseId(courseId);
-    setTab("registration");
+    setTab("contact");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -99,14 +99,12 @@ export default function HomePage() {
             {/* About Us */}
             {tab === "about" && <AboutSection content={about} />}
 
-            {/* Contact Us */}
-            {tab === "contact" && <ContactSection content={contact} />}
-
-            {/* Registration/Onboarding */}
-            {tab === "registration" && (
-              <RegistrationForm 
+            {/* Contact & Enrollment */}
+            {tab === "contact" && (
+              <ContactEnrollmentForm 
                 courses={courses} 
-                preselectedCourseId={selectedCourseId || undefined} 
+                preselectedCourseId={selectedCourseId || undefined}
+                contactInfo={contact}
               />
             )}
 
