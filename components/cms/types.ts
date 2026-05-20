@@ -28,10 +28,18 @@ export type CourseSession = {
   label?: string;
 };
 
+export type MediaItem = {
+  _type: "image" | "video";
+  asset?: any; // Sanity image asset
+  url?: string; // Video URL
+  caption?: string;
+};
+
 export type Course = {
   id: string;
   name: string;
   description: string;
+  media?: MediaItem[];
   schedule: string;
   price: number;
   priceNote?: string;
@@ -53,24 +61,4 @@ export type ContactContent = {
   email: string;
   phone?: string;
   address?: string;
-};
-
-export type Student = {
-  name: string;
-  dob: string;
-  address: string;
-  phone: string;
-  email: string;
-  courseId: string;
-  courseName?: string;
-  sessionDates?: string;
-  schedule?: string;
-  price?: number;
-  requiresTransportation: boolean;
-  travelingFrom: string;
-  physicalLimitations: boolean;
-  foodAllergies: boolean;
-  specificRequirements: string;
-  workedInHomeImprovement: boolean;
-  howHeard: string;
 };

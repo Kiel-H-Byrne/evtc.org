@@ -8,6 +8,7 @@ export async function fetchCourses(): Promise<Course[]> {
       "id": _id,
       name,
       description,
+      media,
       schedule,
       price,
       priceNote,
