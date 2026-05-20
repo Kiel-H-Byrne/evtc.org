@@ -1,138 +1,30 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Section } from "@/components/ui/Styled";
-import { PageWrapper } from "@/components/layout/PageWrapper";
-import { ContactEnrollmentForm } from "@/components/sections/ContactEnrollmentForm";
-import { CourseList, CourseDetail } from "@/components/sections/CourseViews";
-import { LessonModal } from "@/components/sections/LessonModal";
-import { AboutSection } from "@/components/sections/InfoSections";
+import type { AboutContent } from "@/components/cms/types";
 import { useCms } from "@/components/cms/useCms";
-import type { Course, Lesson, AboutContent, ContactContent } from "@/components/cms/types";
-
-// -------------------- FALLBACK DATABASE --------------------
+import { AboutSection } from "@/components/sections/InfoSections";
 import dbFallback from "@/lib/fallbackDb.json";
+import { useEffect, useState } from "react";
 
-export default function HomePage() {
-  const { getCourses, getAboutContent, getContactContent } = useCms();
-  
-  // State
-  const [tab, setTab] = useState("about");
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
-  const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
-
-  // Data State
-  const [courses, setCourses] = useState<Course[]>([]);
+export default function AboutPage() {
+  const { getAboutContent } = useCms();
   const [about, setAbout] = useState<AboutContent | null>(null);
-  const [contact, setContact] = useState<ContactContent | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let active = true;
-
     async function fetchData() {
-      const [fetchedCourses, fetchedAbout, fetchedContact] = await Promise.all([
-        getCourses(),
-        getAboutContent(),
-        getContactContent()
-      ]);
-
-      if (!active) return;
-
-      if (!fetchedCourses || fetchedCourses.length === 0) {
-        const fallback = dbFallback as any;
-        setCourses(fallback.courses as Course[]);
-        setAbout(fallback.about as AboutContent);
-        setContact(fallback.contact as ContactContent);
+      const fetchedAbout = await getAboutContent();
+      if (!fetchedAbout) {
+        setAbout(dbFallback.about as AboutContent);
       } else {
-        setCourses(fetchedCourses);
         setAbout(fetchedAbout);
-        setContact(fetchedContact);
       }
       setLoading(false);
     }
     fetchData();
+  }, [getAboutContent]);
 
-    return () => {
-      active = false;
-    };
-  }, [getCourses, getAboutContent, getContactContent]);
+  if (loading) return <p>Loading about information...</p>;
 
-  // Handlers
-  function handleTabChange(key: string) {
-    setTab(key);
-    setSelectedCourseId(null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function handleCourseSelect(id: string) {
-    setSelectedCourseId(id);
-    setTab("courses");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function handleStartRegistration(courseId: string) {
-    setSelectedCourseId(courseId);
-    setTab("contact");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  const selectedCourse = courses.find((c) => c.id === selectedCourseId);
-
-  const navigationProps = {
-    currentTab: tab,
-    onTabChange: handleTabChange,
-    courses: courses,
-    selectedCourseId: selectedCourseId,
-    onCourseSelect: handleCourseSelect
-  };
-
-  return (
-    <>
-      <PageWrapper navigationProps={navigationProps}>
-        {loading ? (
-          <Section>
-            <h2 style={{ color: "var(--theme-primary)" }}>Loading application data...</h2>
-          </Section>
-        ) : (
-          <>
-            {/* About Us */}
-            {tab === "about" && <AboutSection content={about} />}
-
-            {/* Contact & Enrollment */}
-            {tab === "contact" && (
-              <ContactEnrollmentForm 
-                courses={courses} 
-                preselectedCourseId={selectedCourseId || undefined}
-                contactInfo={contact}
-              />
-            )}
-
-            {/* Courses List */}
-            {tab === "courses" && !selectedCourseId && (
-              <CourseList courses={courses} onSelect={handleCourseSelect} />
-            )}
-
-            {/* Course Detail */}
-            {tab === "courses" && selectedCourse && (
-              <CourseDetail 
-                course={selectedCourse} 
-                onBack={() => setSelectedCourseId(null)}
-                onRegister={handleStartRegistration}
-                onLessonClick={(lesson) => setActiveLesson(lesson)}
-              />
-            )}
-          </>
-        )}
-      </PageWrapper>
-
-      {/* Lesson Details Modal */}
-      {activeLesson && (
-        <LessonModal 
-          lesson={activeLesson} 
-          onClose={() => setActiveLesson(null)} 
-        />
-      )}
-    </>
-  );
+  return <AboutSection content={about} />;
 }

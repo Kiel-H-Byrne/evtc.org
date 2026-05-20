@@ -1,9 +1,10 @@
 "use client";
 
-import type { ContactContent } from "@/components/cms/types";
+import type { ContactContent, Course } from "@/components/cms/types";
 import { useCms } from "@/components/cms/useCms";
 import React from "react";
 import styled from "styled-components";
+import Link from "next/link";
 
 const FooterContainer = styled.footer`
   background: ${(p) => p.theme.colors.primary};
@@ -25,14 +26,18 @@ const FooterContent = styled.div`
 const FooterColumn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: 0.8em;
 `;
 
-const FooterLogo = styled.h2`
+const FooterLogo = styled(Link)`
   font-family: ${(p) => p.theme.typography.headingFont};
   color: ${(p) => p.theme.colors.accent};
   font-size: 1.5rem;
   margin: 0;
+  text-decoration: none;
+  &:hover {
+    color: ${(p) => p.theme.colors.accentHover};
+  }
 `;
 
 const FooterHeading = styled.h3`
@@ -45,12 +50,13 @@ const FooterHeading = styled.h3`
   display: inline-block;
 `;
 
-const FooterLink = styled.a`
+const FooterLink = styled(Link)`
   color: ${(p) => p.theme.colors.surface};
   text-decoration: none;
   opacity: 0.8;
   transition: ${(p) => p.theme.transitions.fast};
   cursor: pointer;
+  font-size: 0.95rem;
 
   &:hover {
     opacity: 1;
@@ -70,46 +76,65 @@ const CopyrightArea = styled.div`
 `;
 
 export function Footer() {
-  const { getContactContent } = useCms();
+  const { getContactContent, getCourses } = useCms();
   const [contact, setContact] = React.useState<ContactContent | null>(null);
+  const [courses, setCourses] = React.useState<Course[]>([]);
 
   React.useEffect(() => {
     getContactContent().then((res) => setContact(res));
-  }, [getContactContent]);
+    getCourses().then((res) => setCourses(res || []));
+  }, [getContactContent, getCourses]);
 
   return (
     <FooterContainer>
       <FooterContent>
         <FooterColumn>
-          <FooterLogo>EVTC</FooterLogo>
-          <p style={{ opacity: 0.8, lineHeight: 1.6 }}>
+          <FooterLogo href="/">EVTC</FooterLogo>
+          <p style={{ opacity: 0.8, lineHeight: 1.6, marginTop: '0.5em' }}>
             Elite Vocational Training Center is dedicated to training students
             in home improvement.
           </p>
         </FooterColumn>
 
         <FooterColumn>
-          <FooterHeading>Training & Academics</FooterHeading>
-          <FooterLink>Bathtub & Vanity Refinishing</FooterLink>
-          <FooterLink>Countertop & Cabinet Refinishing</FooterLink>
-          <FooterLink>Drywall Installation</FooterLink>
-          <FooterLink>Maintenance & Repair</FooterLink>
+          <FooterHeading>Training Courses</FooterHeading>
+          {courses.length > 0 ? (
+            courses.map((course) => (
+              <FooterLink key={course.id} href={`/courses/${course.slug || course.id}`}>
+                {course.name}
+              </FooterLink>
+            ))
+          ) : (
+            <>
+              <FooterLink href="/courses">Bathtub & Vanity Refinishing</FooterLink>
+              <FooterLink href="/courses">Countertop & Cabinet Refinishing</FooterLink>
+              <FooterLink href="/courses">Drywall Installation</FooterLink>
+              <FooterLink href="/courses">Maintenance & Repair</FooterLink>
+            </>
+          )}
         </FooterColumn>
 
         <FooterColumn>
-          <FooterHeading>Contact Us</FooterHeading>
+          <FooterHeading>Quick Links</FooterHeading>
+          <FooterLink href="/">About Us</FooterLink>
+          <FooterLink href="/courses">All Courses</FooterLink>
+          <FooterLink href="/contact">Contact & Enrollment</FooterLink>
+        </FooterColumn>
+
+        <FooterColumn>
+          <FooterHeading>Contact Details</FooterHeading>
           <p style={{ opacity: 0.8, margin: 0 }}>
             {contact?.email ? (
               <a
                 href={`mailto:${contact.email}`}
-                style={{ color: "var(--theme-accent)" }}
+                style={{ color: "var(--theme-accent)", textDecoration: 'none' }}
               >
                 {contact.email}
               </a>
             ) : (
               <a
                 href="mailto:elitehigherlearning@gmail.com"
-                style={{ color: "var(--theme-accent)" }}
+                style={{ color: "var(--theme-accent)", textDecoration: 'none' }}
               >
                 elitehigherlearning@gmail.com
               </a>

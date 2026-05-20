@@ -6,6 +6,7 @@ export async function fetchCourses(): Promise<Course[]> {
   return sanityClient.fetch(
     `*[_type == "course"] | order(available desc, price desc) {
       "id": _id,
+      "slug": slug.current,
       name,
       description,
       media,

@@ -37,6 +37,7 @@ export type MediaItem = {
 
 export type Course = {
   id: string;
+  slug: string;
   name: string;
   description: string;
   media?: MediaItem[];

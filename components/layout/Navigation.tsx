@@ -1,5 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 const NavBarWrapper = styled.nav`
@@ -20,7 +22,7 @@ const Tabs = styled.ul`
   margin: 0;
   padding: 0;
   list-style: none;
-  
+
   @media (max-width: 600px) {
     gap: 1em;
     flex-wrap: wrap;
@@ -29,16 +31,21 @@ const Tabs = styled.ul`
 `;
 
 const TabItem = styled.li<{ active?: boolean }>`
-  color: ${(p) => p.theme.colors.surface};
-  font-weight: ${(p) => p.theme.typography.bodyFontWeightMedium};
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 0.5em 1em;
-  border-bottom: 3px solid ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
-  transition: ${(p) => p.theme.transitions.fast};
-  
-  &:hover {
-    color: ${(p) => p.theme.colors.accent};
+  a {
+    color: ${(p) => p.theme.colors.surface};
+    text-decoration: none;
+    font-weight: ${(p) => p.theme.typography.bodyFontWeightMedium};
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    border-bottom: 3px solid
+      ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
+    transition: ${(p) => p.theme.transitions.fast};
+    display: block;
+
+    &:hover {
+      color: ${(p) => p.theme.colors.accent};
+    }
   }
 `;
 
@@ -47,7 +54,7 @@ const Dropdown = styled.div`
   display: inline-block;
 `;
 
-const DropdownButton = styled.button`
+const DropdownButton = styled.button<{ active?: boolean }>`
   background: none;
   color: ${(p) => p.theme.colors.surface};
   font-family: ${(p) => p.theme.typography.fontFamily};
@@ -59,8 +66,11 @@ const DropdownButton = styled.button`
   display: flex;
   align-items: center;
   transition: ${(p) => p.theme.transitions.fast};
-  
-  &:hover, &:focus {
+  border-bottom: 3px solid
+    ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
+
+  &:hover,
+  &:focus {
     color: ${(p) => p.theme.colors.accent};
     outline: none;
   }
@@ -82,42 +92,55 @@ const DropdownMenu = styled.ul<{ open: boolean }>`
   list-style: none;
   border: 1px solid ${(p) => p.theme.colors.border};
   animation: ${(p) =>
-    p.open
-      ? css`
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
-        `
-      : "none"} 0.2s ease-out;
+      p.open
+        ? css`
+            from {
+              opacity: 0;
+              transform: translateY(-8px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          `
+        : "none"}
+    0.2s ease-out;
 `;
 
 const DropdownItem = styled.li<{ active?: boolean }>`
-  padding: 0.75em 1.5em;
-  cursor: pointer;
-  font-weight: ${(p) => (p.active ? 600 : 400)};
-  background: ${(p) => (p.active ? p.theme.colors.surfaceAlt : "transparent")};
-  border-left: 3px solid ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
-  transition: ${(p) => p.theme.transitions.fast};
-  
-  &:hover {
-    background: ${(p) => p.theme.colors.accentHover}1A;
-    color: ${(p) => p.theme.colors.primary};
+  a {
+    display: block;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    font-weight: ${(p) => (p.active ? 600 : 400)};
+    background: ${(p) =>
+      p.active ? p.theme.colors.surfaceAlt : "transparent"};
+    border-left: 3px solid
+      ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
+    transition: ${(p) => p.theme.transitions.fast};
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      background: ${(p) => p.theme.colors.accentHover}1A;
+      color: ${(p) => p.theme.colors.primary};
+    }
   }
 `;
 
 export type NavigationProps = {
-  currentTab: string;
-  onTabChange: (tab: string) => void;
-  courses: { id: string; name: string }[];
-  selectedCourseId: string | null;
-  onCourseSelect: (id: string) => void;
+  courses: { id: string; name: string; slug?: string }[];
 };
 
-export function NavigationBar({ currentTab, onTabChange, courses, selectedCourseId, onCourseSelect }: NavigationProps) {
+export function NavigationBar({ courses }: NavigationProps) {
   const [courseDropdown, setCourseDropdown] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
-      if ((e.target as HTMLElement).closest('[data-component="Dropdown"]') == null) {
+      if (
+        (e.target as HTMLElement).closest('[data-component="Dropdown"]') == null
+      ) {
         setCourseDropdown(false);
       }
     }
@@ -128,63 +151,65 @@ export function NavigationBar({ currentTab, onTabChange, courses, selectedCourse
   }, [courseDropdown]);
 
   const tabs = [
-    { key: "about", label: "About Us" },
-    { key: "courses", label: "Training Courses" },
-    { key: "contact", label: "Contact & Enrollment" }
+    { key: "about", label: "About Us", href: "/" },
+    { key: "courses", label: "Training Courses", href: "/courses" },
+    { key: "contact", label: "Contact & Enrollment", href: "/contact" },
   ];
 
   return (
     <NavBarWrapper>
       <Tabs>
-        {tabs.map((tabItem) => 
+        {tabs.map((tabItem) =>
           tabItem.key === "courses" ? (
             <Dropdown data-component="Dropdown" key={tabItem.key}>
               <DropdownButton
                 aria-haspopup="listbox"
                 aria-expanded={courseDropdown}
                 onClick={() => setCourseDropdown((open) => !open)}
+                active={pathname.startsWith("/courses")}
               >
                 {tabItem.label} ▾
               </DropdownButton>
               <DropdownMenu open={courseDropdown} role="listbox">
-                {courses.length > 0 ? courses.map((c) => (
-                  <DropdownItem
-                    key={c.id}
-                    active={selectedCourseId === c.id}
-                    onClick={() => {
-                      onCourseSelect(c.id);
-                      setCourseDropdown(false);
-                    }}
-                  >
-                    {c.name}
-                  </DropdownItem>
-                )) : (
-                  <DropdownItem style={{ opacity: 0.7, cursor: "default" }}>
+                {courses.length > 0 ? (
+                  courses.map((c) => (
+                    <DropdownItem
+                      key={c.id}
+                      active={pathname === `/courses/${c.slug || c.id}`}
+                    >
+                      <Link
+                        href={`/courses/${c.slug || c.id}`}
+                        onClick={() => setCourseDropdown(false)}
+                      >
+                        {c.name}
+                      </Link>
+                    </DropdownItem>
+                  ))
+                ) : (
+                  <li style={{ padding: "0.75em 1.5em", opacity: 0.7 }}>
                     Loading courses...
-                  </DropdownItem>
+                  </li>
                 )}
                 {courses.length > 0 && (
-                  <DropdownItem 
-                    style={{ borderTop: "1px solid #E0E0E0", marginTop: "4px", fontSize: "0.9em", color: "#6E6E6E" }}
-                    onClick={() => {
-                      onTabChange("courses");
-                      setCourseDropdown(false);
-                    }}
+                  <DropdownItem
+                    style={{ borderTop: "1px solid #E0E0E0", marginTop: "4px" }}
                   >
-                    View All Courses
+                    <Link
+                      href="/courses"
+                      style={{ fontSize: "0.9em", color: "#6E6E6E" }}
+                      onClick={() => setCourseDropdown(false)}
+                    >
+                      View All Courses
+                    </Link>
                   </DropdownItem>
                 )}
               </DropdownMenu>
             </Dropdown>
           ) : (
-            <TabItem
-              key={tabItem.key}
-              active={currentTab === tabItem.key && !selectedCourseId}
-              onClick={() => onTabChange(tabItem.key)}
-            >
-              {tabItem.label}
+            <TabItem key={tabItem.key} active={pathname === tabItem.href}>
+              <Link href={tabItem.href}>{tabItem.label}</Link>
             </TabItem>
-          )
+          ),
         )}
       </Tabs>
     </NavBarWrapper>
