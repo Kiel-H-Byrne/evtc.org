@@ -1,6 +1,6 @@
 "use client";
 
-import type { ContactContent } from "@/components/cms/types";
+import type { ContactContent, Course } from "@/components/cms/types";
 import { useCms } from "@/components/cms/useCms";
 import React from "react";
 import styled from "styled-components";

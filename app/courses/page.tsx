@@ -31,7 +31,6 @@ export default function CoursesPage() {
   return (
     <CourseList 
       courses={courses} 
-      onSelect={(id) => router.push(`/courses/${id}`)} 
     />
   );
 }

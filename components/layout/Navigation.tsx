@@ -129,7 +129,7 @@ const DropdownItem = styled.li<{ active?: boolean }>`
 `;
 
 export type NavigationProps = {
-  courses: { id: string; name: string }[];
+  courses: { id: string; name: string; slug?: string }[];
 };
 
 export function NavigationBar({ courses }: NavigationProps) {
