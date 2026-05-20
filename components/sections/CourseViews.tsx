@@ -1,10 +1,10 @@
 "use client";
 import type { Course, Lesson, MediaItem } from "@/components/cms/types";
 import { Button, CourseCard, Section } from "@/components/ui/Styled";
-import styled from "styled-components";
-import React, { useState } from "react";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
+import React, { useState } from "react";
+import styled from "styled-components";
 
 const LessonList = styled.ul`
   list-style: none;
@@ -95,7 +95,8 @@ const CarouselItem = styled.div`
   height: 100%;
   scroll-snap-align: start;
   position: relative;
-  img, iframe {
+  img,
+  iframe {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -117,7 +118,8 @@ const NavDot = styled.button<{ active: boolean }>`
   height: 10px;
   border-radius: 50%;
   border: none;
-  background: ${(p) => (p.active ? p.theme.colors.accent : "rgba(255,255,255,0.5)")};
+  background: ${(p) =>
+    p.active ? p.theme.colors.accent : "rgba(255,255,255,0.5)"};
   cursor: pointer;
   padding: 0;
 `;
@@ -130,7 +132,7 @@ function MediaViewer({ items }: { items: MediaItem[] }) {
 
   return (
     <MediaContainer>
-      <Carousel 
+      <Carousel
         ref={carouselRef}
         onScroll={(e) => {
           const target = e.currentTarget;
@@ -141,7 +143,10 @@ function MediaViewer({ items }: { items: MediaItem[] }) {
         {items.map((item, i) => (
           <CarouselItem key={i}>
             {item._type === "image" ? (
-              <img src={urlFor(item.asset).url()} alt={item.caption || "Course media"} />
+              <img
+                src={urlFor(item.asset).url()}
+                alt={item.caption || "Course media"}
+              />
             ) : (
               <iframe
                 src={item.url}
@@ -156,14 +161,18 @@ function MediaViewer({ items }: { items: MediaItem[] }) {
       {items.length > 1 && (
         <CarouselNav>
           {items.map((_, i) => (
-            <NavDot key={i} active={i === activeIndex} onClick={() => {
-              if (carouselRef.current) {
-                carouselRef.current.scrollTo({
-                  left: carouselRef.current.offsetWidth * i,
-                  behavior: 'smooth'
-                });
-              }
-            }} />
+            <NavDot
+              key={i}
+              active={i === activeIndex}
+              onClick={() => {
+                if (carouselRef.current) {
+                  carouselRef.current.scrollTo({
+                    left: carouselRef.current.offsetWidth * i,
+                    behavior: "smooth",
+                  });
+                }
+              }}
+            />
           ))}
         </CarouselNav>
       )}
@@ -171,11 +180,7 @@ function MediaViewer({ items }: { items: MediaItem[] }) {
   );
 }
 
-export function CourseList({
-  courses,
-}: {
-  courses: Course[];
-}) {
+export function CourseList({ courses }: { courses: Course[] }) {
   if (courses.length === 0) {
     return (
       <Section>
@@ -269,10 +274,11 @@ export function CourseList({
             </div>
 
             <div style={{ marginTop: "1em" }}>
-              <Link href={`/courses/${course.slug || course.id}`} style={{ textDecoration: 'none' }}>
-                <Button as="div">
-                  View Course Details
-                </Button>
+              <Link
+                href={`/courses/${course.slug || course.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Button as="div">View Course Details</Button>
               </Link>
             </div>
           </CourseCard>
@@ -293,17 +299,24 @@ export function CourseDetail({
 
   return (
     <Section>
-      <Link href="/courses" style={{ 
-        color: "var(--theme-text-secondary)",
-        marginBottom: "1.5em",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5em",
-        fontSize: "0.95rem",
-        textDecoration: 'none'
-      }}>
+      <Link
+        href="/courses"
+        style={{
+          color: "var(--theme-text-secondary)",
+          marginBottom: "1.5em",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5em",
+          fontSize: "0.95rem",
+          textDecoration: "none",
+        }}
+      >
         <span>←</span> Back to Courses
       </Link>
+
+      {course.media && course.media.length > 0 && (
+        <MediaViewer items={course.media} />
+      )}
 
       {course.media && course.media.length > 0 && (
         <MediaViewer items={course.media} />
@@ -332,7 +345,14 @@ export function CourseDetail({
           <StatusBadge active={!isComingSoon}>
             {isComingSoon ? "Coming Soon" : "Enrollment Open"}
           </StatusBadge>
-          <Link href={isComingSoon ? "#" : `/contact?courseId=${course.slug || course.id}`} style={{ textDecoration: 'none' }}>
+          <Link
+            href={
+              isComingSoon
+                ? "#"
+                : `/contact?courseId=${course.slug || course.id}`
+            }
+            style={{ textDecoration: "none" }}
+          >
             <Button as="div" disabled={isComingSoon}>
               {isComingSoon ? "Coming Soon" : "Enroll Now"}
             </Button>
@@ -381,7 +401,8 @@ export function CourseDetail({
           <span
             style={{ fontSize: "0.95em", color: "var(--theme-text-secondary)" }}
           >
-            {course.paymentInstructions || "Contact us for business payment options."}
+            {course.paymentInstructions ||
+              "Contact us for business payment options."}
           </span>
         </MetaItem>
       </MetaGrid>
@@ -404,13 +425,17 @@ export function CourseDetail({
           </li>
         ) : (
           course.lessons.map((lesson) => (
-            <LessonItem key={lesson.id} onClick={() => onLessonClick(lesson)} style={{ cursor: 'pointer' }}>
+            <LessonItem
+              key={lesson.id}
+              onClick={() => onLessonClick(lesson)}
+              style={{ cursor: "pointer" }}
+            >
               <div
                 style={{
                   fontWeight: 500,
                   display: "flex",
                   alignItems: "center",
-                  color: 'var(--theme-text)'
+                  color: "var(--theme-text)",
                 }}
               >
                 {lesson.name}

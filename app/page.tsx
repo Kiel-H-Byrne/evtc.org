@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { AboutSection } from "@/components/sections/InfoSections";
-import { useCms } from "@/components/cms/useCms";
 import type { AboutContent } from "@/components/cms/types";
+import { useCms } from "@/components/cms/useCms";
+import { AboutSection } from "@/components/sections/InfoSections";
 import dbFallback from "@/lib/fallbackDb.json";
+import { useEffect, useState } from "react";
 
 export default function AboutPage() {
   const { getAboutContent } = useCms();

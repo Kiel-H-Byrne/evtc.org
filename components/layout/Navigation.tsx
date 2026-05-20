@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import styled, { css } from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import styled, { css } from "styled-components";
 
 const NavBarWrapper = styled.nav`
   display: flex;
@@ -22,7 +22,7 @@ const Tabs = styled.ul`
   margin: 0;
   padding: 0;
   list-style: none;
-  
+
   @media (max-width: 600px) {
     gap: 1em;
     flex-wrap: wrap;
@@ -38,10 +38,11 @@ const TabItem = styled.li<{ active?: boolean }>`
     font-size: 1.1rem;
     cursor: pointer;
     padding: 0.5em 1em;
-    border-bottom: 3px solid ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
+    border-bottom: 3px solid
+      ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
     transition: ${(p) => p.theme.transitions.fast};
     display: block;
-    
+
     &:hover {
       color: ${(p) => p.theme.colors.accent};
     }
@@ -65,9 +66,11 @@ const DropdownButton = styled.button<{ active?: boolean }>`
   display: flex;
   align-items: center;
   transition: ${(p) => p.theme.transitions.fast};
-  border-bottom: 3px solid ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
-  
-  &:hover, &:focus {
+  border-bottom: 3px solid
+    ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
+
+  &:hover,
+  &:focus {
     color: ${(p) => p.theme.colors.accent};
     outline: none;
   }
@@ -89,12 +92,19 @@ const DropdownMenu = styled.ul<{ open: boolean }>`
   list-style: none;
   border: 1px solid ${(p) => p.theme.colors.border};
   animation: ${(p) =>
-    p.open
-      ? css`
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
-        `
-      : "none"} 0.2s ease-out;
+      p.open
+        ? css`
+            from {
+              opacity: 0;
+              transform: translateY(-8px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          `
+        : "none"}
+    0.2s ease-out;
 `;
 
 const DropdownItem = styled.li<{ active?: boolean }>`
@@ -103,12 +113,14 @@ const DropdownItem = styled.li<{ active?: boolean }>`
     padding: 0.75em 1.5em;
     cursor: pointer;
     font-weight: ${(p) => (p.active ? 600 : 400)};
-    background: ${(p) => (p.active ? p.theme.colors.surfaceAlt : "transparent")};
-    border-left: 3px solid ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
+    background: ${(p) =>
+      p.active ? p.theme.colors.surfaceAlt : "transparent"};
+    border-left: 3px solid
+      ${(p) => (p.active ? p.theme.colors.accent : "transparent")};
     transition: ${(p) => p.theme.transitions.fast};
     text-decoration: none;
     color: inherit;
-    
+
     &:hover {
       background: ${(p) => p.theme.colors.accentHover}1A;
       color: ${(p) => p.theme.colors.primary};
@@ -126,7 +138,9 @@ export function NavigationBar({ courses }: NavigationProps) {
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
-      if ((e.target as HTMLElement).closest('[data-component="Dropdown"]') == null) {
+      if (
+        (e.target as HTMLElement).closest('[data-component="Dropdown"]') == null
+      ) {
         setCourseDropdown(false);
       }
     }
@@ -139,13 +153,13 @@ export function NavigationBar({ courses }: NavigationProps) {
   const tabs = [
     { key: "about", label: "About Us", href: "/" },
     { key: "courses", label: "Training Courses", href: "/courses" },
-    { key: "contact", label: "Contact & Enrollment", href: "/contact" }
+    { key: "contact", label: "Contact & Enrollment", href: "/contact" },
   ];
 
   return (
     <NavBarWrapper>
       <Tabs>
-        {tabs.map((tabItem) => 
+        {tabs.map((tabItem) =>
           tabItem.key === "courses" ? (
             <Dropdown data-component="Dropdown" key={tabItem.key}>
               <DropdownButton
@@ -157,25 +171,34 @@ export function NavigationBar({ courses }: NavigationProps) {
                 {tabItem.label} ▾
               </DropdownButton>
               <DropdownMenu open={courseDropdown} role="listbox">
-                {courses.length > 0 ? courses.map((c) => (
-                  <DropdownItem
-                    key={c.id}
-                    active={pathname === `/courses/${c.slug || c.id}`}
-                  >
-                    <Link href={`/courses/${c.slug || c.id}`} onClick={() => setCourseDropdown(false)}>
-                      {c.name}
-                    </Link>
-                  </DropdownItem>
-                )) : (
-                  <li style={{ padding: '0.75em 1.5em', opacity: 0.7 }}>
+                {courses.length > 0 ? (
+                  courses.map((c) => (
+                    <DropdownItem
+                      key={c.id}
+                      active={pathname === `/courses/${c.slug || c.id}`}
+                    >
+                      <Link
+                        href={`/courses/${c.slug || c.id}`}
+                        onClick={() => setCourseDropdown(false)}
+                      >
+                        {c.name}
+                      </Link>
+                    </DropdownItem>
+                  ))
+                ) : (
+                  <li style={{ padding: "0.75em 1.5em", opacity: 0.7 }}>
                     Loading courses...
                   </li>
                 )}
                 {courses.length > 0 && (
-                  <DropdownItem 
+                  <DropdownItem
                     style={{ borderTop: "1px solid #E0E0E0", marginTop: "4px" }}
                   >
-                    <Link href="/courses" style={{ fontSize: "0.9em", color: "#6E6E6E" }} onClick={() => setCourseDropdown(false)}>
+                    <Link
+                      href="/courses"
+                      style={{ fontSize: "0.9em", color: "#6E6E6E" }}
+                      onClick={() => setCourseDropdown(false)}
+                    >
                       View All Courses
                     </Link>
                   </DropdownItem>
@@ -183,15 +206,10 @@ export function NavigationBar({ courses }: NavigationProps) {
               </DropdownMenu>
             </Dropdown>
           ) : (
-            <TabItem
-              key={tabItem.key}
-              active={pathname === tabItem.href}
-            >
-              <Link href={tabItem.href}>
-                {tabItem.label}
-              </Link>
+            <TabItem key={tabItem.key} active={pathname === tabItem.href}>
+              <Link href={tabItem.href}>{tabItem.label}</Link>
             </TabItem>
-          )
+          ),
         )}
       </Tabs>
     </NavBarWrapper>
