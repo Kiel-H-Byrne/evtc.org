@@ -17,6 +17,23 @@ export const courseType = defineType({
       type: "text",
     }),
     defineField({
+      name: "media",
+      title: "Media (Photos/Video)",
+      type: "array",
+      of: [
+        { type: "image", options: { hotspot: true } },
+        {
+          type: "object",
+          name: "video",
+          title: "Video",
+          fields: [
+            { name: "url", type: "url", title: "Video URL (YouTube/Vimeo)" },
+            { name: "caption", type: "string", title: "Caption" },
+          ],
+        },
+      ],
+    }),
+    defineField({
       name: "schedule",
       title: "Schedule",
       type: "string",
