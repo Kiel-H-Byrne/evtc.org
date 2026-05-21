@@ -32,20 +32,11 @@ export default function CourseDetailPage() {
       console.log("CourseDetailPage: fetching courses for slug:", slugVal);
       const fetchedCourses = await getCourses();
       
-      const cmsCourses = fetchedCourses || [];
-      const fallbackCourses = (dbFallback as any).courses as Course[];
+      const allCourses = (!fetchedCourses || fetchedCourses.length === 0)
+        ? (dbFallback as any).courses as Course[]
+        : fetchedCourses;
       
-      // Combine both sources, but keep CMS courses first for precedence
-      const allCourses = [...cmsCourses];
-      
-      // Add fallbacks that aren't already represented by ID/Slug in CMS list
-      fallbackCourses.forEach(fb => {
-        if (!allCourses.find(c => c.id === fb.id || (c.slug && c.slug === fb.slug))) {
-          allCourses.push(fb);
-        }
-      });
-      
-      console.log("CourseDetailPage: allCourses total count (CMS + Fallback):", allCourses.length);
+      console.log("CourseDetailPage: allCourses total count:", allCourses.length);
       
       const targetSlug = typeof slugVal === 'string' ? decodeURIComponent(slugVal).toLowerCase() : "";
       

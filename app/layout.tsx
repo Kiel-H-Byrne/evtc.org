@@ -43,16 +43,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fetchedCourses = await fetchCourses().catch(() => []);
-  const fallbackCourses = (dbFallback as any).courses as { id: string; name: string; slug?: string }[];
-  
-  // Combine for navigation
-  const navCourses: { id: string; name: string; slug?: string }[] = [...fetchedCourses];
-  fallbackCourses.forEach(fb => {
-    if (!navCourses.find(c => c.id === fb.id || (c.slug && c.slug === fb.slug))) {
-      navCourses.push({ id: fb.id, name: fb.name, slug: fb.slug });
-    }
-  });
+  const navCourses = await fetchCourses().catch(() => []);
 
   return (
     <html lang="en">
