@@ -80,7 +80,6 @@ export default async function RootLayout({
                   style={{
                     position: "relative",
                     width: "100%",
-                    maxWidth: "800px",
                     margin: "1em auto",
                   }}
                 >
