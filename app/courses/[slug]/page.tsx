@@ -9,7 +9,8 @@ import dbFallback from "@/lib/fallbackDb.json";
 import { useParams, useRouter } from "next/navigation";
 
 export default function CourseDetailPage() {
-  const { slug } = useParams();
+  const params = useParams();
+  const slug = params?.slug;
   const router = useRouter();
   const { getCourses } = useCms();
   const [course, setCourse] = useState<Course | null>(null);
@@ -18,17 +19,59 @@ export default function CourseDetailPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const fetchedCourses = await getCourses();
-      const allCourses = (!fetchedCourses || fetchedCourses.length === 0)
-        ? (dbFallback as any).courses as Course[]
-        : fetchedCourses;
+      if (!slug) {
+        console.warn("CourseDetailPage: No slug found in params", params);
+        // If no slug, we can't find anything
+        setLoading(false);
+        return;
+      }
+
+      // Ensure we have a string slug
+      const slugVal = Array.isArray(slug) ? slug[0] : slug;
       
-      const found = allCourses.find((c: Course) => c.slug === slug || c.id === slug);
+      console.log("CourseDetailPage: fetching courses for slug:", slugVal);
+      const fetchedCourses = await getCourses();
+      
+      const cmsCourses = fetchedCourses || [];
+      const fallbackCourses = (dbFallback as any).courses as Course[];
+      
+      // Combine both sources, but keep CMS courses first for precedence
+      const allCourses = [...cmsCourses];
+      
+      // Add fallbacks that aren't already represented by ID/Slug in CMS list
+      fallbackCourses.forEach(fb => {
+        if (!allCourses.find(c => c.id === fb.id || (c.slug && c.slug === fb.slug))) {
+          allCourses.push(fb);
+        }
+      });
+      
+      console.log("CourseDetailPage: allCourses total count (CMS + Fallback):", allCourses.length);
+      
+      const targetSlug = typeof slugVal === 'string' ? decodeURIComponent(slugVal).toLowerCase() : "";
+      
+      if (!targetSlug) {
+        console.warn("CourseDetailPage: targetSlug is empty after processing");
+        setLoading(false);
+        return;
+      }
+
+      const found = allCourses.find((c: Course) => {
+        const courseSlug = c.slug?.toLowerCase();
+        const courseId = c.id?.toLowerCase();
+        return (courseSlug && courseSlug === targetSlug) || (courseId && courseId === targetSlug);
+      });
+      
+      if (!found) {
+        console.warn("CourseDetailPage: course not found for slug:", targetSlug, "Available IDs:", allCourses.map(c => c.id));
+      } else {
+        console.log("CourseDetailPage: found course:", found.name);
+      }
+      
       setCourse(found || null);
       setLoading(false);
     }
     fetchData();
-  }, [getCourses, slug]);
+  }, [getCourses, slug, params]);
 
   if (loading) return <p>Loading course details...</p>;
   if (!course) return <p>Course not found.</p>;

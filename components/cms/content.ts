@@ -33,7 +33,9 @@ export async function fetchCourses(): Promise<Course[]> {
           locked
         }
       }
-    }`
+    }`,
+    {},
+    { next: { revalidate: 60 } }
   );
 }
 
@@ -42,7 +44,9 @@ export async function fetchAboutContent(): Promise<AboutContent | null> {
     `*[_type == "aboutContent"][0] {
       heading,
       body
-    }`
+    }`,
+    {},
+    { next: { revalidate: 60 } }
   );
 }
 
@@ -52,6 +56,8 @@ export async function fetchContactContent(): Promise<ContactContent | null> {
       email,
       phone,
       address
-    }`
+    }`,
+    {},
+    { next: { revalidate: 60 } }
   );
 }
