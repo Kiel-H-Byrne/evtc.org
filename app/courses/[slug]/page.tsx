@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import type { Course, Lesson } from "@/components/cms/types";
+import { useCms } from "@/components/cms/useCms";
 import { CourseDetail } from "@/components/sections/CourseViews";
 import { LessonModal } from "@/components/sections/LessonModal";
-import { useCms } from "@/components/cms/useCms";
-import type { Course, Lesson } from "@/components/cms/types";
 import dbFallback from "@/lib/fallbackDb.json";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -28,27 +28,25 @@ export default function CourseDetailPage() {
 
       // Ensure we have a string slug
       const slugVal = Array.isArray(slug) ? slug[0] : slug;
-      
+
       console.log("CourseDetailPage: fetching courses for slug:", slugVal);
       const fetchedCourses = await getCourses();
-      
-      const cmsCourses = fetchedCourses || [];
-      const fallbackCourses = (dbFallback as any).courses as Course[];
-      
-      // Combine both sources, but keep CMS courses first for precedence
-      const allCourses = [...cmsCourses];
-      
-      // Add fallbacks that aren't already represented by ID/Slug in CMS list
-      fallbackCourses.forEach(fb => {
-        if (!allCourses.find(c => c.id === fb.id || (c.slug && c.slug === fb.slug))) {
-          allCourses.push(fb);
-        }
-      });
-      
-      console.log("CourseDetailPage: allCourses total count (CMS + Fallback):", allCourses.length);
-      
-      const targetSlug = typeof slugVal === 'string' ? decodeURIComponent(slugVal).toLowerCase() : "";
-      
+
+      const allCourses =
+        !fetchedCourses || fetchedCourses.length === 0
+          ? ((dbFallback as any).courses as Course[])
+          : fetchedCourses;
+
+      console.log(
+        "CourseDetailPage: allCourses total count:",
+        allCourses.length,
+      );
+
+      const targetSlug =
+        typeof slugVal === "string"
+          ? decodeURIComponent(slugVal).toLowerCase()
+          : "";
+
       if (!targetSlug) {
         console.warn("CourseDetailPage: targetSlug is empty after processing");
         setLoading(false);
@@ -58,15 +56,23 @@ export default function CourseDetailPage() {
       const found = allCourses.find((c: Course) => {
         const courseSlug = c.slug?.toLowerCase();
         const courseId = c.id?.toLowerCase();
-        return (courseSlug && courseSlug === targetSlug) || (courseId && courseId === targetSlug);
+        return (
+          (courseSlug && courseSlug === targetSlug) ||
+          (courseId && courseId === targetSlug)
+        );
       });
-      
+
       if (!found) {
-        console.warn("CourseDetailPage: course not found for slug:", targetSlug, "Available IDs:", allCourses.map(c => c.id));
+        console.warn(
+          "CourseDetailPage: course not found for slug:",
+          targetSlug,
+          "Available IDs:",
+          allCourses.map((c) => c.id),
+        );
       } else {
         console.log("CourseDetailPage: found course:", found.name);
       }
-      
+
       setCourse(found || null);
       setLoading(false);
     }
@@ -78,15 +84,15 @@ export default function CourseDetailPage() {
 
   return (
     <>
-      <CourseDetail 
-        course={course} 
+      <CourseDetail
+        course={course}
         onLessonClick={(lesson) => setActiveLesson(lesson)}
       />
 
       {activeLesson && (
-        <LessonModal 
-          lesson={activeLesson} 
-          onClose={() => setActiveLesson(null)} 
+        <LessonModal
+          lesson={activeLesson}
+          onClose={() => setActiveLesson(null)}
         />
       )}
     </>
