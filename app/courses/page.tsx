@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { CourseList } from "@/components/sections/CourseViews";
-import { useCms } from "@/components/cms/useCms";
 import type { Course } from "@/components/cms/types";
+import { useCms } from "@/components/cms/useCms";
+import { CourseList } from "@/components/sections/CourseViews";
 import dbFallback from "@/lib/fallbackDb.json";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function CoursesPage() {
   const { getCourses } = useCms();
@@ -16,7 +16,7 @@ export default function CoursesPage() {
   useEffect(() => {
     async function fetchData() {
       const fetchedCourses = await getCourses();
-      
+
       if (!fetchedCourses || fetchedCourses.length === 0) {
         setCourses((dbFallback as any).courses as Course[]);
       } else {
@@ -30,9 +30,5 @@ export default function CoursesPage() {
 
   if (loading) return <p>Loading training courses...</p>;
 
-  return (
-    <CourseList 
-      courses={courses} 
-    />
-  );
+  return <CourseList courses={courses} />;
 }

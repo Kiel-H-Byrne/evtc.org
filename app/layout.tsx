@@ -1,5 +1,4 @@
 import { fetchCourses } from "@/components/cms/content";
-import dbFallback from "@/lib/fallbackDb.json";
 import { AppProviders } from "@/components/layout/AppProviders";
 import { Footer } from "@/components/layout/Footer";
 import { NavigationBar } from "@/components/layout/Navigation";
