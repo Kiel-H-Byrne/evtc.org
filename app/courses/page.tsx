@@ -16,11 +16,20 @@ export default function CoursesPage() {
   useEffect(() => {
     async function fetchData() {
       const fetchedCourses = await getCourses();
-      if (!fetchedCourses || fetchedCourses.length === 0) {
-        setCourses((dbFallback as any).courses as Course[]);
-      } else {
-        setCourses(fetchedCourses);
-      }
+      
+      const cmsCourses = fetchedCourses || [];
+      const fallbackCourses = (dbFallback as any).courses as Course[];
+      
+      // Combine both sources
+      const allCourses = [...cmsCourses];
+      
+      fallbackCourses.forEach(fb => {
+        if (!allCourses.find(c => c.id === fb.id || (c.slug && c.slug === fb.slug))) {
+          allCourses.push(fb);
+        }
+      });
+
+      setCourses(allCourses);
       setLoading(false);
     }
     fetchData();
