@@ -29,9 +29,11 @@ export type CourseSession = {
 };
 
 export type MediaItem = {
-  _type: "image" | "video";
-  asset?: any; // Sanity image asset
+  _type: "image" | "video" | "beforeAfter";
+  asset?: any; // Sanity image asset for standard image
   url?: string; // Video URL
+  beforeImage?: any; // Sanity image asset for Before/After
+  afterImage?: any; // Sanity image asset for Before/After
   caption?: string;
 };
 

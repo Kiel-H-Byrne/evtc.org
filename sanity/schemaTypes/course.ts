@@ -41,6 +41,28 @@ export const courseType = defineType({
             { name: "caption", type: "string", title: "Caption" },
           ],
         },
+        {
+          type: "object",
+          name: "beforeAfter",
+          title: "Before/After Photos",
+          fields: [
+            {
+              name: "beforeImage",
+              type: "image",
+              title: "Before Image",
+              options: { hotspot: true },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: "afterImage",
+              type: "image",
+              title: "After Image",
+              options: { hotspot: true },
+              validation: (Rule) => Rule.required(),
+            },
+            { name: "caption", type: "string", title: "Caption" },
+          ],
+        },
       ],
     }),
     defineField({
