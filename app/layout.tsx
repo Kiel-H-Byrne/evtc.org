@@ -63,8 +63,8 @@ export default async function RootLayout({
               minHeight: "100vh",
             }}
           >
-            <Header>
-              <div style={{ padding: "2em 1em" }}>
+            <Header style={{ padding: "0" }}  >
+              <div style={{ padding: "0 1em" }}>
                 <h1
                   style={{
                     marginBottom: "0.5em",
