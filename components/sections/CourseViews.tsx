@@ -1,10 +1,10 @@
 "use client";
 import type { Course, Lesson, MediaItem } from "@/components/cms/types";
-import { Button, CourseCard, Section } from "@/components/ui/Styled";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
+import { Button, CourseCard, Section } from "@/components/ui/Styled";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 
 const LessonList = styled.ul`
@@ -152,9 +152,9 @@ function MediaViewer({ items }: { items: MediaItem[] }) {
         {sortedItems.map((item, i) => (
           <CarouselItem key={i}>
             {item._type === "beforeAfter" ? (
-              <BeforeAfterSlider 
-                beforeUrl={urlFor(item.beforeImage).url()} 
-                afterUrl={urlFor(item.afterImage).url()} 
+              <BeforeAfterSlider
+                beforeUrl={urlFor(item.beforeImage).url()}
+                afterUrl={urlFor(item.afterImage).url()}
               />
             ) : item._type === "image" ? (
               <img
@@ -328,10 +328,6 @@ export function CourseDetail({
         <span>←</span> Back to Courses
       </Link>
 
-      {course.media && course.media.length > 0 && (
-        <MediaViewer items={course.media} />
-      )}
-
       <div
         style={{
           display: "flex",
@@ -382,6 +378,10 @@ export function CourseDetail({
           {course.description}
         </p>
       </div>
+
+      {course.media && course.media.length > 0 && (
+        <MediaViewer items={course.media} />
+      )}
 
       <MetaGrid>
         <MetaItem>
@@ -437,8 +437,8 @@ export function CourseDetail({
           course.lessons.map((lesson) => (
             <LessonItem
               key={lesson.id}
-              onClick={() => onLessonClick(lesson)}
-              style={{ cursor: "pointer" }}
+              onClick={() => lesson.resources ? onLessonClick(lesson) : void 0}
+              style={lesson.resources ? { cursor: "pointer" } : {}}
             >
               <div
                 style={{
